@@ -1,0 +1,33 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://service-discovery:8761/eureka/
+keycloak:
+  auth-server-url: https://login.archi-lab.io/auth
+  bearer-only: true
+  cors: false
+  principal-attribute: preferred_username
+  realm: archilab
+  resource: prox-company-profile-service
+server:
+  port: 9006
+  forward-headers-strategy: native
+spring:
+  application:
+    name: company-profile-service
+  datasource:
+    password: company-profile-service
+    url: jdbc:postgresql://company-profile-db:5432/company-profile-db
+    username: company-profile-service
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+springdoc:
+  # By default Springdoc will remove schemas which do not have references.
+  remove-broken-reference-definitions: false

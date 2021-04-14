@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  company-profile-service:
+    image: ${REPOSITORY}/${IMAGE}:${TAG}
+    depends_on:
+      - company-profile-db
+    networks:
+      - prox
+      - company-profile-db
+
+  company-profile-db:
+    image: postgres:11.3-alpine
+    volumes:
+      - company-profile-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=company-profile-service
+      - POSTGRES_PASSWORD=company-profile-service
+      - POSTGRES_DB=company-profile-db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - company-profile-db
+
+volumes:
+  company-profile-db-data:
+
+networks:
+  prox:
+    external: true
+  company-profile-db:
