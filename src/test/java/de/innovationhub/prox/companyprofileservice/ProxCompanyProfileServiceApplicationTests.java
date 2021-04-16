@@ -1,4 +1,4 @@
-package de.innovationhub.prox.proxcompanyprofileservice;
+package de.innovationhub.prox.companyprofileservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

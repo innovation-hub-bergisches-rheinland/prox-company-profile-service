@@ -1,4 +1,4 @@
-package de.innovationhub.prox.proxcompanyprofileservice;
+package de.innovationhub.prox.companyprofileservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
