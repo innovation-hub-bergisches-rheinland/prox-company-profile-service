@@ -1,4 +1,4 @@
-package de.innovationhub.prox.companyprofileservice.domain.language;
+package de.innovationhub.prox.companyprofileservice.domain.company.language;
 
 public enum Type {
   ANCIENT,

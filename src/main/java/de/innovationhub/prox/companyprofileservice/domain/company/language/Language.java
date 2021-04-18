@@ -1,4 +1,4 @@
-package de.innovationhub.prox.companyprofileservice.domain.language;
+package de.innovationhub.prox.companyprofileservice.domain.company.language;
 
 import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
 import javax.persistence.Entity;
@@ -8,12 +8,14 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Length;
 
 /** Languages based on ISO 639-2 */
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,6 +48,34 @@ public class Language extends AbstractEntity {
     this.isoIdentifier2 = isoIdentifier2.toLowerCase();
     this.englishName = englishName;
     this.germanName = germanName;
+    this.type = type;
+  }
+
+  public void setIsoIdentifier2(String isoIdentifier2) {
+    if (isoIdentifier2 == null || isoIdentifier2.length() != 2 && !isoIdentifier2.isBlank()) {
+      throw new IllegalArgumentException("ISO 639-2 Identifier invalid");
+    }
+    this.isoIdentifier2 = isoIdentifier2.toLowerCase();
+  }
+
+  public void setEnglishName(String englishName) {
+    if (englishName == null || englishName.isBlank()) {
+      throw new IllegalArgumentException("Language name cannot be blank or null");
+    }
+    this.englishName = englishName;
+  }
+
+  public void setGermanName(String germanName) {
+    if (germanName == null || germanName.isBlank()) {
+      throw new IllegalArgumentException("Language name cannot be blank or null");
+    }
+    this.germanName = germanName;
+  }
+
+  public void setType(Type type) {
+    if (type == null) {
+      throw new IllegalArgumentException("Language type cannot be null use Type.NONE instead");
+    }
     this.type = type;
   }
 }

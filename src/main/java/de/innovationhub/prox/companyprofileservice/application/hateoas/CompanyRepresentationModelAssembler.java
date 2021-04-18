@@ -23,6 +23,12 @@ public class CompanyRepresentationModelAssembler
       resource.add(
           linkTo(methodOn(CompanyController.class).getCompanyLanguages(company.getId()))
               .withRel("languages"));
+      resource.add(
+          linkTo(methodOn(CompanyController.class).getCompanyHeadquarter(company.getId()))
+              .withRel("headquarter"));
+      resource.add(
+          linkTo(methodOn(CompanyController.class).getCompanyQuarters(company.getId()))
+              .withRel("quarters"));
     }
   }
 

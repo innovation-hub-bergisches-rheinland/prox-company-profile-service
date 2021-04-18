@@ -1,8 +1,8 @@
-package de.innovationhub.prox.companyprofileservice.application.controller.language;
+package de.innovationhub.prox.companyprofileservice.application.controller.company.language;
 
 import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
-import de.innovationhub.prox.companyprofileservice.domain.language.Language;
-import de.innovationhub.prox.companyprofileservice.domain.language.Type;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.Type;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

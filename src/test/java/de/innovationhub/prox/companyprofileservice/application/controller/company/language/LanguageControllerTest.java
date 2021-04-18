@@ -1,4 +1,4 @@
-package de.innovationhub.prox.companyprofileservice.application.controller.language;
+package de.innovationhub.prox.companyprofileservice.application.controller.company.language;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.emptyString;
@@ -13,10 +13,9 @@ import static org.mockito.Mockito.when;
 
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
-import de.innovationhub.prox.companyprofileservice.application.service.language.LanguageService;
-import de.innovationhub.prox.companyprofileservice.domain.language.Language;
-import de.innovationhub.prox.companyprofileservice.domain.language.LanguageSampleData;
-import java.util.Arrays;
+import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageSampleData;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,7 +76,7 @@ class LanguageControllerTest {
 
   @Test
   void testGetLanguageById() {
-    when(languageService.getLanguage(eq(sampleLanguage.getId())))
+    when(languageService.getById(eq(sampleLanguage.getId())))
         .thenReturn(Optional.of(sampleLanguage));
 
     given()
@@ -91,12 +90,12 @@ class LanguageControllerTest {
             "_links.self.href",
             response -> equalTo("http://localhost/languages/" + response.path("id")));
 
-    verify(languageService).getLanguage(eq(sampleLanguage.getId()));
+    verify(languageService).getById(eq(sampleLanguage.getId()));
   }
 
   @Test
   void testGetLanguageByIdWithInvalidId() {
-    when(languageService.getLanguage(any(UUID.class))).thenReturn(Optional.empty());
+    when(languageService.getById(any(UUID.class))).thenReturn(Optional.empty());
 
     given()
         .webAppContextSetup(context)
@@ -109,6 +108,6 @@ class LanguageControllerTest {
         .body("error", is(not(emptyString())))
         .body("message", is(not(emptyString())));
 
-    verify(languageService).getLanguage(any(UUID.class));
+    verify(languageService).getById(any(UUID.class));
   }
 }

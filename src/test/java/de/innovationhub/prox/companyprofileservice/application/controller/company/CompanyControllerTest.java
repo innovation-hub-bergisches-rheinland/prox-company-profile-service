@@ -7,24 +7,30 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
-import de.innovationhub.prox.companyprofileservice.application.exception.language.LanguageNotFoundException;
+import de.innovationhub.prox.companyprofileservice.application.exception.company.language.LanguageNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
+import de.innovationhub.prox.companyprofileservice.application.hateoas.QuarterRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
-import de.innovationhub.prox.companyprofileservice.domain.language.Language;
-import de.innovationhub.prox.companyprofileservice.domain.language.Type;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.Type;
+import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +43,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-//TODO: refactoring
+// TODO: refactoring
 @WebMvcTest(controllers = CompanyController.class)
 @Import({
   CompanyRepresentationModelAssembler.class,
   LanguageRepresentationModelAssembler.class,
+  QuarterRepresentationModelAssembler.class,
   WebConfig.class
 })
 @RunWith(SpringRunner.class)
@@ -59,10 +66,10 @@ class CompanyControllerTest {
     this.sampleCompany = companySampleData.getSAMPLE_COMPANY_1();
   }
 
+  @DisplayName("GET /companies should return OK")
   @Test
   void testGetAllCompanies() {
-    when(companyService.getAllCompanies())
-        .thenReturn(Collections.singletonList(this.sampleCompany));
+    when(companyService.getAll()).thenReturn(Collections.singletonList(this.sampleCompany));
 
     given()
         .webAppContextSetup(context)
@@ -71,21 +78,16 @@ class CompanyControllerTest {
         .get("/companies")
         .then()
         .status(HttpStatus.OK)
-        .body("_embedded.companyList", hasSize(1))
-        .body(
-            "_embedded.companyList[0]._links.self.href",
-            response ->
-                equalTo(
-                    "http://localhost/companies/" + response.path("_embedded.companyList[0].id")))
-        .body("_links.self.href", equalTo("http://localhost/companies"));
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
+        .body("_embedded.companyList", hasSize(1));
 
-    verify(companyService).getAllCompanies();
+    verify(companyService).getAll();
   }
 
+  @DisplayName("GET /companies/{id} should return OK")
   @Test
   void testGetCompanyById() {
-    when(companyService.getCompanyById(eq(sampleCompany.getId())))
-        .thenReturn(Optional.of(sampleCompany));
+    when(companyService.getById(eq(sampleCompany.getId()))).thenReturn(Optional.of(sampleCompany));
 
     given()
         .webAppContextSetup(context)
@@ -93,14 +95,13 @@ class CompanyControllerTest {
         .when()
         .get("/companies/{id}", sampleCompany.getId())
         .then()
-        .status(HttpStatus.OK)
-        .body(
-            "_links.self.href",
-            response -> equalTo("http://localhost/companies/" + response.path("id")));
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
+        .status(HttpStatus.OK);
 
-    verify(companyService).getCompanyById(eq(sampleCompany.getId()));
+    verify(companyService).getById(eq(sampleCompany.getId()));
   }
 
+  @DisplayName("GET /companies/{id}/languages should return OK")
   @Test
   void testGetCompanyLanguages() {
     when(companyService.getCompanyLanguages(eq(sampleCompany.getId())))
@@ -116,22 +117,17 @@ class CompanyControllerTest {
         .log()
         .all()
         .status(HttpStatus.OK)
-        .body("_embedded.languageList", hasSize(1))
-        .body(
-            "_embedded.languageList[0]._links.self.href",
-            response ->
-                equalTo(
-                    "http://localhost/languages/" + response.path("_embedded.languageList[0].id")));
-    // .body("_links.self.href", response -> equalTo("http://localhost/companies/" +
-    // response.path("id") + "/languages"))
-    // TODO: Check self link
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
+        .body("_embedded.languageList", hasSize(1));
 
     verify(companyService).getCompanyLanguages(eq(sampleCompany.getId()));
   }
 
+  @DisplayName("PUT /companies/{id}/languages should return OK")
   @Test
   void testSetCompanyLanguages() {
-    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anySet())).thenReturn(this.sampleCompany);
+    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anySet()))
+        .thenReturn(this.sampleCompany);
 
     String[] uuids = new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
 
@@ -145,14 +141,17 @@ class CompanyControllerTest {
         .then()
         .log()
         .all()
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
         .status(HttpStatus.OK);
 
     verify(companyService).setCompanyLanguages(eq(this.sampleCompany.getId()), anySet());
   }
 
+  @DisplayName("PUT /companies/{id}/languages should return NOT_FOUND")
   @Test
   void testSetCompanyLanguagesInvalid() {
-    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anySet())).thenThrow(new LanguageNotFoundException());
+    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anySet()))
+        .thenThrow(new LanguageNotFoundException());
 
     String[] uuids = new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
 
@@ -171,9 +170,10 @@ class CompanyControllerTest {
         .body("error", is(not(emptyString())))
         .body("message", is(not(emptyString())));
 
-    verify(companyService).setCompanyLanguages(any(UUID.class), anySet());
+    verify(companyService).setCompanyLanguages(eq(sampleCompany.getId()), anySet());
   }
 
+  @DisplayName("PUT /companies/{id}/languages should return BAD_REQUEST")
   @Test
   void testSetCompanyLanguagesInvalidUUID() {
     String[] uuids = new String[] {"abcdefghijklmnopqrstuvwxyz12345567890"};
@@ -194,9 +194,10 @@ class CompanyControllerTest {
         .body("message", is(not(emptyString())));
   }
 
+  @DisplayName("GET /companies/{id} should return BAD_REQUEST")
   @Test
   void testGetCompanyByIdWithInvalidId() {
-    when(companyService.getCompanyById(any(UUID.class))).thenReturn(Optional.empty());
+    when(companyService.getById(any(UUID.class))).thenReturn(Optional.empty());
 
     given()
         .webAppContextSetup(context)
@@ -209,12 +210,13 @@ class CompanyControllerTest {
         .body("error", is(not(emptyString())))
         .body("message", is(not(emptyString())));
 
-    verify(companyService).getCompanyById(any(UUID.class));
+    verify(companyService).getById(any(UUID.class));
   }
 
+  @DisplayName("POST /companies should return CREATED")
   @Test
   void testSaveCompany() {
-    when(companyService.saveCompany(any(Company.class))).thenReturn(sampleCompany);
+    when(companyService.save(any(Company.class))).thenReturn(sampleCompany);
 
     given()
         .webAppContextSetup(context)
@@ -228,17 +230,19 @@ class CompanyControllerTest {
         .then()
         .log()
         .all()
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
         .status(HttpStatus.CREATED)
         .body(
             "_links.self.href",
             response -> equalTo("http://localhost/companies/" + response.path("id")));
 
-    verify(companyService).saveCompany(any(Company.class));
+    verify(companyService).save(any(Company.class));
   }
 
+  @DisplayName("PUT /companies should return OK")
   @Test
   void testUpdateCompany() {
-    when(companyService.updateCompany(any(Company.class))).thenReturn(sampleCompany);
+    when(companyService.update(any(), any(Company.class))).thenReturn(sampleCompany);
 
     given()
         .webAppContextSetup(context)
@@ -248,11 +252,91 @@ class CompanyControllerTest {
         .when()
         .put("/companies/{id}", sampleCompany.getId())
         .then()
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
         .status(HttpStatus.OK)
         .body(
             "_links.self.href",
             response -> equalTo("http://localhost/companies/" + response.path("id")));
 
-    verify(companyService).updateCompany(any(Company.class));
+    verify(companyService).update(eq(sampleCompany.getId()), any(Company.class));
+  }
+
+  @DisplayName("GET /companies/{id}/quarters should return OK")
+  @Test
+  void testGetCompanyQuarters() {
+    when(companyService.getCompanyQuarters(any(UUID.class))).thenReturn(Collections.emptyList());
+
+    given()
+        .webAppContextSetup(context)
+        .header("Accept", MediaTypes.HAL_JSON_VALUE)
+        .when()
+        .get("/companies/{id}/quarters", sampleCompany.getId())
+        .then()
+        .status(HttpStatus.OK)
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE);
+
+    verify(companyService).getCompanyQuarters(eq(sampleCompany.getId()));
+  }
+
+  @DisplayName("PUT /companies/{id}/quarters should return OK")
+  @Test
+  void testPutCompanyQuarters() {
+    when(companyService.setCompanyQuarters(any(), anyIterable()))
+        .thenReturn(Collections.emptyList());
+
+    UUID[] uuids = new UUID[] {UUID.randomUUID(), UUID.randomUUID()};
+
+    given()
+        .webAppContextSetup(context)
+        .header("Accept", MediaTypes.HAL_JSON_VALUE)
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .body(uuids)
+        .when()
+        .put("/companies/{id}/quarters", sampleCompany.getId())
+        .then()
+        .status(HttpStatus.OK)
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE);
+
+    verify(companyService).setCompanyQuarters(eq(sampleCompany.getId()), anyIterable());
+  }
+
+  @DisplayName("GET /companies/{id}/headquarter should return OK")
+  @Test
+  void testGetCompanyHeadquarter() {
+    when(companyService.getCompanyHeadquarter(any(UUID.class)))
+        .thenReturn(Optional.of(new Quarter("test")));
+
+    given()
+        .webAppContextSetup(context)
+        .header("Accept", MediaTypes.HAL_JSON_VALUE)
+        .when()
+        .get("/companies/{id}/headquarter", sampleCompany.getId())
+        .then()
+        .status(HttpStatus.OK)
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE);
+
+    verify(companyService).getCompanyHeadquarter(eq(sampleCompany.getId()));
+  }
+
+  @DisplayName("PUT /companies/{id}/quarters should return OK")
+  @Test
+  void testPutCompanyHeadquarter() {
+    when(companyService.setCompanyHeadquarter(any(), any())).thenReturn(new Quarter("test"));
+
+    Map<String, UUID> map = new HashMap<>();
+    map.put("id", UUID.randomUUID());
+
+    given()
+        .webAppContextSetup(context)
+        .header("Accept", MediaTypes.HAL_JSON_VALUE)
+        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        .body(map)
+        .when()
+        .put("/companies/{id}/headquarter", sampleCompany.getId())
+        .then()
+        .status(HttpStatus.OK)
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE);
+
+    verify(companyService).setCompanyHeadquarter(eq(sampleCompany.getId()), eq(map.get("id")));
   }
 }

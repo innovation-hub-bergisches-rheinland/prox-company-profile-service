@@ -16,13 +16,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-    properties:
-      javax:
-        persistence:
-          schema-generation:
-            scripts:
-              action: create
-              create-target: create.sql
   flyway:
     enabled: false
   h2:

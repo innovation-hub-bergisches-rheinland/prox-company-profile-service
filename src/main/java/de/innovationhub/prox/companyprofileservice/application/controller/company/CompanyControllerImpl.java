@@ -3,21 +3,18 @@ package de.innovationhub.prox.companyprofileservice.application.controller.compa
 import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
 import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
-import de.innovationhub.prox.companyprofileservice.application.exception.language.LanguageNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
+import de.innovationhub.prox.companyprofileservice.application.hateoas.QuarterRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
-import de.innovationhub.prox.companyprofileservice.application.service.language.LanguageService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
-import de.innovationhub.prox.companyprofileservice.domain.language.Language;
-import java.util.ArrayList;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
+import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
-import org.apache.commons.codec.language.bm.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +31,19 @@ public class CompanyControllerImpl implements CompanyController {
   private final CompanyService companyService;
   private final CompanyRepresentationModelAssembler companyRepresentationModelAssembler;
   private final LanguageRepresentationModelAssembler languageRepresentationModelAssembler;
+  private final QuarterRepresentationModelAssembler quarterRepresentationModelAssembler;
   private final Logger logger = LoggerFactory.getLogger(CompanyControllerImpl.class);
 
   @Autowired
   public CompanyControllerImpl(
       CompanyService companyService,
       CompanyRepresentationModelAssembler companyRepresentationModelAssembler,
-      LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
+      LanguageRepresentationModelAssembler languageRepresentationModelAssembler,
+      QuarterRepresentationModelAssembler quarterRepresentationModelAssembler) {
     this.companyService = companyService;
     this.companyRepresentationModelAssembler = companyRepresentationModelAssembler;
     this.languageRepresentationModelAssembler = languageRepresentationModelAssembler;
+    this.quarterRepresentationModelAssembler = quarterRepresentationModelAssembler;
   }
 
   @ExceptionHandler({CustomEntityNotFoundException.class})
@@ -62,13 +62,13 @@ public class CompanyControllerImpl implements CompanyController {
   @Override
   public ResponseEntity<CollectionModel<EntityModel<Company>>> getAllCompanies() {
     var collectionModel =
-        companyRepresentationModelAssembler.toCollectionModel(companyService.getAllCompanies());
+        companyRepresentationModelAssembler.toCollectionModel(companyService.getAll());
     return ResponseEntity.ok(collectionModel);
   }
 
   @Override
   public ResponseEntity<EntityModel<Company>> getCompany(UUID id) {
-    var company = companyService.getCompanyById(id).orElseThrow(CompanyNotFoundException::new);
+    var company = companyService.getById(id).orElseThrow(CompanyNotFoundException::new);
     return ResponseEntity.ok(companyRepresentationModelAssembler.toModel(company));
   }
 
@@ -91,10 +91,45 @@ public class CompanyControllerImpl implements CompanyController {
   }
 
   @Override
+  public ResponseEntity<EntityModel<Quarter>> getCompanyHeadquarter(UUID id) {
+    return companyService
+        .getCompanyHeadquarter(id)
+        .map(quarterRepresentationModelAssembler::toModel)
+        .map(ResponseEntity::ok)
+        .orElseThrow(CompanyNotFoundException::new);
+  }
+
+  @Override
+  public ResponseEntity<EntityModel<Quarter>> putCompanyHeadquarter(
+      UUID id, Map<String, UUID> ids) {
+    if (!ids.containsKey("id") || ids.get("id") == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+    return ResponseEntity.ok(
+        quarterRepresentationModelAssembler.toModel(
+            companyService.setCompanyHeadquarter(id, ids.get("id"))));
+  }
+
+  @Override
+  public ResponseEntity<CollectionModel<EntityModel<Quarter>>> getCompanyQuarters(UUID id) {
+    return ResponseEntity.ok(
+        quarterRepresentationModelAssembler.toCollectionModel(
+            companyService.getCompanyQuarters(id)));
+  }
+
+  @Override
+  public ResponseEntity<CollectionModel<EntityModel<Quarter>>> putCompanyQuarters(
+      UUID id, String[] ids) {
+    return ResponseEntity.ok(
+        quarterRepresentationModelAssembler.toCollectionModel(
+            companyService.setCompanyQuarters(
+                id, Arrays.stream(ids).map(UUID::fromString).collect(Collectors.toSet()))));
+  }
+
+  @Override
   public ResponseEntity<EntityModel<Company>> saveCompany(@Valid Company company) {
-    var savedCompany = this.companyService.saveCompany(company);
-    var entityModel =
-        this.companyRepresentationModelAssembler.toModel(savedCompany);
+    var savedCompany = this.companyService.save(company);
+    var entityModel = this.companyRepresentationModelAssembler.toModel(savedCompany);
     return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
   }
 
@@ -104,7 +139,7 @@ public class CompanyControllerImpl implements CompanyController {
       throw new RuntimeException();
     }
 
-    var savedCompany = this.companyService.updateCompany(professor);
+    var savedCompany = this.companyService.update(id, professor);
 
     return ResponseEntity.ok(this.companyRepresentationModelAssembler.toModel(savedCompany));
   }

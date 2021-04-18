@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.innovationhub.prox.companyprofileservice.domain.company.Branch;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
-import de.innovationhub.prox.companyprofileservice.domain.company.Quarter;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -18,8 +17,7 @@ import org.springframework.boot.test.json.JsonContent;
 @JsonTest
 class CompanyJsonTest {
 
-  @Autowired
-  JacksonTester<Company> json;
+  @Autowired JacksonTester<Company> json;
 
   @Test
   void testSerialize() throws Exception {
@@ -30,33 +28,36 @@ class CompanyJsonTest {
     System.out.println(result.getJson());
 
     assertThat(result).extractingJsonPathValue("$.id").isEqualTo(company.getId().toString());
-    assertThat(result).extractingJsonPathValue("$.information.name").isEqualTo(company.getInformation().getName());
-    assertThat(result).extractingJsonPathValue("$.information.foundingDate").isEqualTo(company.getInformation().getFoundingDate());
-    assertThat(result).extractingJsonPathValue("$.information.numberOfEmployees").isEqualTo(company.getInformation().getNumberOfEmployees());
-    assertThat(result).extractingJsonPathValue("$.information.homepage").isEqualTo(company.getInformation().getHomepage());
-    assertThat(result).extractingJsonPathValue("$.information.vita").isEqualTo(company.getInformation().getVita());
-
-    assertThat(result).extractingJsonPathValue("$.headquarter.location").isEqualTo(company.getHeadquarter().getLocation());
+    assertThat(result)
+        .extractingJsonPathValue("$.information.name")
+        .isEqualTo(company.getInformation().getName());
+    assertThat(result)
+        .extractingJsonPathValue("$.information.foundingDate")
+        .isEqualTo(company.getInformation().getFoundingDate());
+    assertThat(result)
+        .extractingJsonPathValue("$.information.numberOfEmployees")
+        .isEqualTo(company.getInformation().getNumberOfEmployees());
+    assertThat(result)
+        .extractingJsonPathValue("$.information.homepage")
+        .isEqualTo(company.getInformation().getHomepage());
+    assertThat(result)
+        .extractingJsonPathValue("$.information.vita")
+        .isEqualTo(company.getInformation().getVita());
 
     assertThat(result)
         .extractingJsonPathArrayValue("$.branches[*].branchName")
         .containsExactlyInAnyOrderElementsOf(
             company.getBranches().stream().map(Branch::getBranchName).collect(Collectors.toList()));
-
-    assertThat(result)
-        .extractingJsonPathArrayValue("$.quarters[*].location")
-        .containsExactlyInAnyOrderElementsOf(
-            company.getQuarters().stream().map(Quarter::getLocation).collect(Collectors.toList()));
   }
 
   @Test
   void testDeserialize() throws Exception {
-    String jsonContent = "{\"id\":\"d8004470-676a-4511-97c3-7217d37ae4b8\",\"information\":{\"name\":\"Company name\",\"foundingDate\":\"18-04-2021\",\"numberOfEmployees\":\"about 200\",\"homepage\":\"www.example.org\",\"vita\":\"Lorem Ipsum\"},\"headquarter\":{\"location\":\"Germany\"},\"quarters\":[{\"location\":\"Russia\"},{\"location\":\"England\"}],\"branches\":[{\"branchName\":\"Automotive\"},{\"branchName\":\"Industrie 4.0\"}]}";
+    String jsonContent =
+        "{\"id\":\"d8004470-676a-4511-97c3-7217d37ae4b8\",\"information\":{\"name\":\"Company name\",\"foundingDate\":\"18-04-2021\",\"numberOfEmployees\":\"about 200\",\"homepage\":\"www.example.org\",\"vita\":\"Lorem Ipsum\"},\"branches\":[{\"branchName\":\"Automotive\"},{\"branchName\":\"Industrie 4.0\"}]}";
 
     Company company = this.json.parse(jsonContent).getObject();
 
-    assertThat(company.getId())
-        .isEqualTo(UUID.fromString("d8004470-676a-4511-97c3-7217d37ae4b8"));
+    assertThat(company.getId()).isEqualTo(UUID.fromString("d8004470-676a-4511-97c3-7217d37ae4b8"));
 
     assertThat(company.getInformation().getName()).isEqualTo("Company name");
     assertThat(company.getInformation().getFoundingDate()).isEqualTo("18-04-2021");
@@ -64,10 +65,8 @@ class CompanyJsonTest {
     assertThat(company.getInformation().getNumberOfEmployees()).isEqualTo("about 200");
     assertThat(company.getInformation().getVita()).isEqualTo("Lorem Ipsum");
 
-    assertThat(company.getHeadquarter().getLocation()).isEqualTo("Germany");
-
-    assertThat(company.getQuarters()).containsExactlyInAnyOrderElementsOf(Arrays.asList(new Quarter("Russia"), new Quarter("England")));
-
-    assertThat(company.getBranches()).containsExactlyInAnyOrderElementsOf(Arrays.asList(new Branch("Automotive"), new Branch("Industrie 4.0")));
+    assertThat(company.getBranches())
+        .containsExactlyInAnyOrderElementsOf(
+            Arrays.asList(new Branch("Automotive"), new Branch("Industrie 4.0")));
   }
 }

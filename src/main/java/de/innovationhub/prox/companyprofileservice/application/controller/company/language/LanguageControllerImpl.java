@@ -1,11 +1,11 @@
-package de.innovationhub.prox.companyprofileservice.application.controller.language;
+package de.innovationhub.prox.companyprofileservice.application.controller.company.language;
 
 import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
-import de.innovationhub.prox.companyprofileservice.application.exception.language.LanguageNotFoundException;
+import de.innovationhub.prox.companyprofileservice.application.exception.company.language.LanguageNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
-import de.innovationhub.prox.companyprofileservice.application.service.language.LanguageService;
-import de.innovationhub.prox.companyprofileservice.domain.language.Language;
-import de.innovationhub.prox.companyprofileservice.domain.language.Type;
+import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
+import de.innovationhub.prox.companyprofileservice.domain.company.language.Type;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -46,7 +46,7 @@ public class LanguageControllerImpl implements LanguageController {
   @Override
   public ResponseEntity<EntityModel<Language>> getLanguage(UUID id) {
     return this.languageService
-        .getLanguage(id)
+        .getById(id)
         .map(languageRepresentationModelAssembler::toModel)
         .map(ResponseEntity::ok)
         .orElseThrow(LanguageNotFoundException::new);
