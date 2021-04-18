@@ -11,8 +11,15 @@ import de.innovationhub.prox.companyprofileservice.application.service.language.
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.language.Language;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
+import org.apache.commons.codec.language.bm.Lang;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -25,18 +32,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class CompanyControllerImpl implements CompanyController {
 
   private final CompanyService companyService;
-  private final LanguageService languageService;
   private final CompanyRepresentationModelAssembler companyRepresentationModelAssembler;
   private final LanguageRepresentationModelAssembler languageRepresentationModelAssembler;
+  private final Logger logger = LoggerFactory.getLogger(CompanyControllerImpl.class);
 
   @Autowired
   public CompanyControllerImpl(
       CompanyService companyService,
-      LanguageService languageService,
       CompanyRepresentationModelAssembler companyRepresentationModelAssembler,
       LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
     this.companyService = companyService;
-    this.languageService = languageService;
     this.companyRepresentationModelAssembler = companyRepresentationModelAssembler;
     this.languageRepresentationModelAssembler = languageRepresentationModelAssembler;
   }
@@ -49,6 +54,7 @@ public class CompanyControllerImpl implements CompanyController {
 
   @ExceptionHandler({IllegalArgumentException.class})
   public ResponseEntity<ApiError> entityNotFoundExceptionHandler(IllegalArgumentException e) {
+    logger.error(e.getMessage(), e);
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "Illegal Argument", e.getMessage()));
   }
@@ -76,23 +82,19 @@ public class CompanyControllerImpl implements CompanyController {
   @Override
   public ResponseEntity<CollectionModel<EntityModel<Language>>> putCompanyLanguages(
       UUID id, String[] languageIds) {
-    var languages = new ArrayList<Language>();
 
-    for (String strId : languageIds) {
-      var languageId = UUID.fromString(strId);
-      languages.add(
-          languageService.getLanguage(languageId).orElseThrow(LanguageNotFoundException::new));
-    }
+    var uuids = Arrays.stream(languageIds).map(UUID::fromString).collect(Collectors.toSet());
 
-    var company = companyService.setCompanyLanguages(id, languages);
+    var company = companyService.setCompanyLanguages(id, uuids);
     return ResponseEntity.ok(
         languageRepresentationModelAssembler.toCollectionModel(company.getLanguages()));
   }
 
   @Override
   public ResponseEntity<EntityModel<Company>> saveCompany(@Valid Company company) {
+    var savedCompany = this.companyService.saveCompany(company);
     var entityModel =
-        this.companyRepresentationModelAssembler.toModel(this.companyService.saveCompany(company));
+        this.companyRepresentationModelAssembler.toModel(savedCompany);
     return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
   }
 

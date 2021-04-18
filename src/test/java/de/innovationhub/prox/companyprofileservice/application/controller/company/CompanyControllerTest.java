@@ -7,24 +7,20 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
+import de.innovationhub.prox.companyprofileservice.application.exception.language.LanguageNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
-import de.innovationhub.prox.companyprofileservice.application.service.language.LanguageService;
-import de.innovationhub.prox.companyprofileservice.domain.company.Branch;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyInformation;
-import de.innovationhub.prox.companyprofileservice.domain.company.Quarter;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
 import de.innovationhub.prox.companyprofileservice.domain.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.language.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
+//TODO: refactoring
 @WebMvcTest(controllers = CompanyController.class)
 @Import({
   CompanyRepresentationModelAssembler.class,
@@ -52,27 +49,14 @@ class CompanyControllerTest {
 
   @MockBean private CompanyService companyService;
 
-  @MockBean private LanguageService languageService;
-
   @Autowired private WebApplicationContext context;
 
   private Company sampleCompany;
 
   @BeforeEach
-  private void setup() {
-    this.sampleCompany =
-        new Company(
-            new CompanyInformation(
-                "Null Ltd.", "2021-04-17", "about null", "https://null.org", "Null"),
-            new Quarter("Null"),
-            Collections.emptyList(),
-            Collections.singletonList(
-                new Language(
-                    "de",
-                    "German",
-                    "Deutsch",
-                    de.innovationhub.prox.companyprofileservice.domain.language.Type.LIVING)),
-            Arrays.asList(new Branch("null1"), new Branch("null2")));
+  public void setup() {
+    var companySampleData = new CompanySampleData();
+    this.sampleCompany = companySampleData.getSAMPLE_COMPANY_1();
   }
 
   @Test
@@ -147,18 +131,9 @@ class CompanyControllerTest {
 
   @Test
   void testSetCompanyLanguages() {
-    var language1 = new Language("de", "German", "Deutsch", Type.LIVING);
-    var language2 = new Language("en", "English", "Englisch", Type.LIVING);
-    when(languageService.getLanguage(eq(language1.getId()))).thenReturn(Optional.of(language1));
-    when(languageService.getLanguage(eq(language2.getId()))).thenReturn(Optional.of(language2));
-    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anyList()))
-        .thenAnswer(
-            invocation -> {
-              this.sampleCompany.setLanguages(invocation.getArgument(1));
-              return this.sampleCompany;
-            });
+    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anySet())).thenReturn(this.sampleCompany);
 
-    String[] uuids = new String[] {language1.getId().toString(), language2.getId().toString()};
+    String[] uuids = new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
 
     given()
         .webAppContextSetup(context)
@@ -170,33 +145,14 @@ class CompanyControllerTest {
         .then()
         .log()
         .all()
-        .status(HttpStatus.OK)
-        .body("_embedded.languageList", hasSize(2))
-        .body(
-            "_embedded.languageList[0]._links.self.href",
-            response ->
-                equalTo(
-                    "http://localhost/languages/" + response.path("_embedded.languageList[0].id")))
-        .body("_embedded.languageList[0].id", equalTo(uuids[0]))
-        .body(
-            "_embedded.languageList[1]._links.self.href",
-            response ->
-                equalTo(
-                    "http://localhost/languages/" + response.path("_embedded.languageList[1].id")))
-        .body("_embedded.languageList[1].id", equalTo(uuids[1]));
+        .status(HttpStatus.OK);
 
-    verify(companyService).setCompanyLanguages(eq(this.sampleCompany.getId()), anyList());
+    verify(companyService).setCompanyLanguages(eq(this.sampleCompany.getId()), anySet());
   }
 
   @Test
   void testSetCompanyLanguagesInvalid() {
-    when(languageService.getLanguage(any(UUID.class))).thenReturn(Optional.empty());
-    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anyList()))
-        .thenAnswer(
-            invocation -> {
-              this.sampleCompany.setLanguages(invocation.getArgument(1));
-              return this.sampleCompany;
-            });
+    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anySet())).thenThrow(new LanguageNotFoundException());
 
     String[] uuids = new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
 
@@ -215,8 +171,7 @@ class CompanyControllerTest {
         .body("error", is(not(emptyString())))
         .body("message", is(not(emptyString())));
 
-    verify(languageService).getLanguage(any(UUID.class));
-    verify(companyService, times(0)).setCompanyLanguages(any(UUID.class), anyList());
+    verify(companyService).setCompanyLanguages(any(UUID.class), anySet());
   }
 
   @Test
@@ -259,7 +214,7 @@ class CompanyControllerTest {
 
   @Test
   void testSaveCompany() {
-    when(companyService.saveCompany(sampleCompany)).thenReturn(sampleCompany);
+    when(companyService.saveCompany(any(Company.class))).thenReturn(sampleCompany);
 
     given()
         .webAppContextSetup(context)
@@ -278,12 +233,12 @@ class CompanyControllerTest {
             "_links.self.href",
             response -> equalTo("http://localhost/companies/" + response.path("id")));
 
-    verify(companyService).saveCompany(eq(sampleCompany));
+    verify(companyService).saveCompany(any(Company.class));
   }
 
   @Test
   void testUpdateCompany() {
-    when(companyService.updateCompany(sampleCompany)).thenReturn(sampleCompany);
+    when(companyService.updateCompany(any(Company.class))).thenReturn(sampleCompany);
 
     given()
         .webAppContextSetup(context)
@@ -298,6 +253,6 @@ class CompanyControllerTest {
             "_links.self.href",
             response -> equalTo("http://localhost/companies/" + response.path("id")));
 
-    verify(companyService).updateCompany(eq(sampleCompany));
+    verify(companyService).updateCompany(any(Company.class));
   }
 }

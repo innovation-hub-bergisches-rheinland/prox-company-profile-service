@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
 import de.innovationhub.prox.companyprofileservice.domain.language.Language;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -28,18 +29,18 @@ public class Company extends AbstractEntity {
 
   @Embedded private Quarter headquarter;
 
-  @ElementCollection private List<Quarter> quarters;
+  @ElementCollection private Set<Quarter> quarters;
 
-  @ManyToMany @JsonIgnore private List<Language> languages;
+  @ManyToMany @JsonIgnore private Set<Language> languages;
 
-  @ElementCollection private List<Branch> branches;
+  @ElementCollection private Set<Branch> branches;
 
   public Company(
       CompanyInformation information,
       Quarter headquarter,
-      List<Quarter> quarters,
-      List<Language> languages,
-      List<Branch> branches) {
+      Set<Quarter> quarters,
+      Set<Language> languages,
+      Set<Branch> branches) {
     if (information == null) {
       throw new IllegalArgumentException("Company Information cannot be null");
     }

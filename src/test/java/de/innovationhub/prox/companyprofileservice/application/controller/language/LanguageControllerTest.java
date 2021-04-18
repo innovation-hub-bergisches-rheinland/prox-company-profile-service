@@ -15,6 +15,7 @@ import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.language.LanguageService;
 import de.innovationhub.prox.companyprofileservice.domain.language.Language;
+import de.innovationhub.prox.companyprofileservice.domain.language.LanguageSampleData;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,26 +45,9 @@ class LanguageControllerTest {
 
   @BeforeEach
   private void setup() {
-    this.sampleLanguage =
-        new Language(
-            "de",
-            "German",
-            "Deutsch",
-            de.innovationhub.prox.companyprofileservice.domain.language.Type.LIVING);
-
-    this.sampleLanguages =
-        Arrays.asList(
-            this.sampleLanguage,
-            new Language(
-                "en",
-                "English",
-                "German",
-                de.innovationhub.prox.companyprofileservice.domain.language.Type.LIVING),
-            new Language(
-                "ak",
-                "Akan",
-                "Akan",
-                de.innovationhub.prox.companyprofileservice.domain.language.Type.ANCIENT));
+    var languageSampleData = new LanguageSampleData();
+    this.sampleLanguage = languageSampleData.getSAMPLE_LANGUAGE_1();
+    this.sampleLanguages = languageSampleData.getSAMPLE_LANGUAGES();
   }
 
   @Test
