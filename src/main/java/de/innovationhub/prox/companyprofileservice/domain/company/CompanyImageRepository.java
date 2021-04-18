@@ -5,9 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-/**
- * A repository which is capable of resolving a CompanyImage into image data
- */
+/** A repository which is capable of resolving a CompanyImage into image data */
 public interface CompanyImageRepository {
 
   /**

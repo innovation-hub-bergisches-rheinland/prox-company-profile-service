@@ -5,14 +5,12 @@ import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.language.Language;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Company API", description = "APIs for companies")
 @RequestMapping("companies")
@@ -38,16 +35,16 @@ public interface CompanyController {
       responseCode = "400",
       description = "Invalid UUID",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(
       responseCode = "404",
       description = "No company with the given ID found",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "200", description = "OK")
   @Operation(summary = "Get company")
   @GetMapping(value = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
@@ -58,16 +55,16 @@ public interface CompanyController {
       responseCode = "400",
       description = "Invalid UUID",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(
       responseCode = "404",
       description = "No company with the given ID found",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "200", description = "OK")
   @Operation(summary = "Get company languages")
   @GetMapping(value = "/{id}/languages", produces = MediaTypes.HAL_JSON_VALUE)
@@ -78,41 +75,44 @@ public interface CompanyController {
       responseCode = "400",
       description = "Invalid UUID",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(
       responseCode = "404",
       description = "No company with the given ID found",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "200", description = "OK")
   @Operation(summary = "Set company languages")
-  @PutMapping(value = "/{id}/languages", produces = MediaTypes.HAL_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PutMapping(
+      value = "/{id}/languages",
+      produces = MediaTypes.HAL_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<CollectionModel<EntityModel<Language>>> putCompanyLanguages(
-      @PathVariable("id") @Parameter(description = "UUID of company") UUID id, @RequestBody String[] ids);
+      @PathVariable("id") @Parameter(description = "UUID of company") UUID id,
+      @RequestBody String[] ids);
 
   @ApiResponse(responseCode = "201", description = "Created")
   @ApiResponse(
       responseCode = "401",
       description = "Unauthorized",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(
       responseCode = "403",
       description = "Forbidden",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @Operation(summary = "save professor", security = @SecurityRequirement(name = "Bearer"))
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypes.HAL_JSON_VALUE)
-  ResponseEntity<EntityModel<Company>> saveCompany(
-      @RequestBody Company company);
+  ResponseEntity<EntityModel<Company>> saveCompany(@RequestBody Company company);
 
   @Operation(summary = "update company", security = @SecurityRequirement(name = "Bearer"))
   @ApiResponse(responseCode = "200", description = "Updated")
@@ -121,30 +121,30 @@ public interface CompanyController {
       responseCode = "400",
       description = "Invalid UUID",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(
       responseCode = "401",
       description = "Unauthorized",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(
       responseCode = "403",
       description = "Forbidden",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(
       responseCode = "404",
       description = "No professor with the given ID found",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @PutMapping(
       value = "/{id}",
       consumes = MediaType.APPLICATION_JSON_VALUE,

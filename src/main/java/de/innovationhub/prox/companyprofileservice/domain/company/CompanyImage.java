@@ -14,11 +14,10 @@ import lombok.ToString;
 @ToString
 @Embeddable
 public class CompanyImage {
-  @NotBlank
-  private String filename;
+  @NotBlank private String filename;
 
   public CompanyImage(String filename) {
-    if(filename == null || filename.isBlank()) {
+    if (filename == null || filename.isBlank()) {
       throw new IllegalArgumentException("Filename cannot be null or empty");
     }
     this.filename = filename;

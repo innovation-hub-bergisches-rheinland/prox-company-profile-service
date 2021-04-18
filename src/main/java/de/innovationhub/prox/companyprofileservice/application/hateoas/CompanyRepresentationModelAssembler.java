@@ -11,8 +11,8 @@ import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CompanyRepresentationModelAssembler implements
-    SimpleRepresentationModelAssembler<Company> {
+public class CompanyRepresentationModelAssembler
+    implements SimpleRepresentationModelAssembler<Company> {
 
   @Override
   public void addLinks(EntityModel<Company> resource) {
@@ -20,13 +20,14 @@ public class CompanyRepresentationModelAssembler implements
     if (company != null) {
       resource.add(
           linkTo(methodOn(CompanyController.class).getCompany(company.getId())).withSelfRel());
-      resource.add(linkTo(methodOn(CompanyController.class).getCompanyLanguages(company.getId())).withRel("languages"));
+      resource.add(
+          linkTo(methodOn(CompanyController.class).getCompanyLanguages(company.getId()))
+              .withRel("languages"));
     }
   }
 
   @Override
   public void addLinks(CollectionModel<EntityModel<Company>> resources) {
-    resources.add(
-        linkTo(methodOn(CompanyController.class).getAllCompanies()).withSelfRel());
+    resources.add(linkTo(methodOn(CompanyController.class).getAllCompanies()).withSelfRel());
   }
 }

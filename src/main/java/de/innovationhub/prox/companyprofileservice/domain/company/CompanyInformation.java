@@ -15,25 +15,25 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CompanyInformation {
 
-  @NotBlank
-  private String name;
+  @NotBlank private String name;
 
   private String foundingDate;
 
-  //String because inputs like '100-200', 'about 200' or '10 (DE), 20 (International)' are possible
+  // String because inputs like '100-200', 'about 200' or '10 (DE), 20 (International)' are possible
   private String numberOfEmployees;
 
   private String homepage;
 
   private String vita;
 
-  public CompanyInformation(String name, String foundingDate, String numberOfEmployees, String homepage, String vita) {
-    if(name == null || name.isBlank()) {
+  public CompanyInformation(
+      String name, String foundingDate, String numberOfEmployees, String homepage, String vita) {
+    if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Name of company cannot be null or empty");
     }
     this.name = name;
     this.foundingDate = foundingDate;
-    this.numberOfEmployees= numberOfEmployees;
+    this.numberOfEmployees = numberOfEmployees;
     this.homepage = homepage;
     this.vita = vita;
   }

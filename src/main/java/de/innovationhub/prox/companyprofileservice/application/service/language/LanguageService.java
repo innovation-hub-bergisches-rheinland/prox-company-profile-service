@@ -7,6 +7,8 @@ import java.util.UUID;
 
 public interface LanguageService {
   Optional<Language> getLanguage(UUID uuid);
+
   Iterable<Language> getAllLanguages();
+
   Iterable<Language> getAllLanguages(Type... type);
 }

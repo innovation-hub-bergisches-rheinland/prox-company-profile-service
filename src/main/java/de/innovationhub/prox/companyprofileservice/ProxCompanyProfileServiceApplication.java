@@ -9,5 +9,4 @@ public class ProxCompanyProfileServiceApplication {
   public static void main(String[] args) {
     SpringApplication.run(ProxCompanyProfileServiceApplication.class, args);
   }
-
 }

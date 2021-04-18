@@ -24,7 +24,6 @@ import de.innovationhub.prox.companyprofileservice.domain.company.CompanyInforma
 import de.innovationhub.prox.companyprofileservice.domain.company.Quarter;
 import de.innovationhub.prox.companyprofileservice.domain.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.language.Type;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -44,45 +43,56 @@ import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest(controllers = CompanyController.class)
 @Import({
-    CompanyRepresentationModelAssembler.class,
-    LanguageRepresentationModelAssembler.class,
-    WebConfig.class
+  CompanyRepresentationModelAssembler.class,
+  LanguageRepresentationModelAssembler.class,
+  WebConfig.class
 })
 @RunWith(SpringRunner.class)
 class CompanyControllerTest {
 
-  @MockBean
-  private CompanyService companyService;
+  @MockBean private CompanyService companyService;
 
-  @MockBean
-  private LanguageService languageService;
+  @MockBean private LanguageService languageService;
 
-  @Autowired
-  private WebApplicationContext context;
+  @Autowired private WebApplicationContext context;
 
   private Company sampleCompany;
 
   @BeforeEach
   private void setup() {
-    this.sampleCompany = new Company(new CompanyInformation("Null Ltd.", "2021-04-17", "about null", "https://null.org", "Null"), new Quarter("Null"),
-        Collections.emptyList(),
-        Collections.singletonList(new Language("de", "German", "Deutsch",
-            de.innovationhub.prox.companyprofileservice.domain.language.Type.LIVING)), Arrays.asList(new Branch("null1"), new Branch("null2")));
+    this.sampleCompany =
+        new Company(
+            new CompanyInformation(
+                "Null Ltd.", "2021-04-17", "about null", "https://null.org", "Null"),
+            new Quarter("Null"),
+            Collections.emptyList(),
+            Collections.singletonList(
+                new Language(
+                    "de",
+                    "German",
+                    "Deutsch",
+                    de.innovationhub.prox.companyprofileservice.domain.language.Type.LIVING)),
+            Arrays.asList(new Branch("null1"), new Branch("null2")));
   }
 
   @Test
   void testGetAllCompanies() {
-    when(companyService.getAllCompanies()).thenReturn(Collections.singletonList(this.sampleCompany));
+    when(companyService.getAllCompanies())
+        .thenReturn(Collections.singletonList(this.sampleCompany));
 
     given()
         .webAppContextSetup(context)
         .header("Accept", MediaTypes.HAL_JSON_VALUE)
-    .when()
+        .when()
         .get("/companies")
-    .then()
+        .then()
         .status(HttpStatus.OK)
         .body("_embedded.companyList", hasSize(1))
-        .body("_embedded.companyList[0]._links.self.href", response -> equalTo("http://localhost/companies/" + response.path("_embedded.companyList[0].id")))
+        .body(
+            "_embedded.companyList[0]._links.self.href",
+            response ->
+                equalTo(
+                    "http://localhost/companies/" + response.path("_embedded.companyList[0].id")))
         .body("_links.self.href", equalTo("http://localhost/companies"));
 
     verify(companyService).getAllCompanies();
@@ -90,36 +100,47 @@ class CompanyControllerTest {
 
   @Test
   void testGetCompanyById() {
-    when(companyService.getCompanyById(eq(sampleCompany.getId()))).thenReturn(Optional.of(sampleCompany));
+    when(companyService.getCompanyById(eq(sampleCompany.getId())))
+        .thenReturn(Optional.of(sampleCompany));
 
     given()
         .webAppContextSetup(context)
         .header("Accept", MediaTypes.HAL_JSON_VALUE)
-    .when()
+        .when()
         .get("/companies/{id}", sampleCompany.getId())
-    .then()
+        .then()
         .status(HttpStatus.OK)
-        .body("_links.self.href", response -> equalTo("http://localhost/companies/" + response.path("id")));
+        .body(
+            "_links.self.href",
+            response -> equalTo("http://localhost/companies/" + response.path("id")));
 
     verify(companyService).getCompanyById(eq(sampleCompany.getId()));
   }
 
   @Test
   void testGetCompanyLanguages() {
-    when(companyService.getCompanyLanguages(eq(sampleCompany.getId()))).thenReturn(Collections.singletonList(new Language("de", "German", "Deutsch", Type.LIVING)));
+    when(companyService.getCompanyLanguages(eq(sampleCompany.getId())))
+        .thenReturn(
+            Collections.singletonList(new Language("de", "German", "Deutsch", Type.LIVING)));
 
     given()
         .webAppContextSetup(context)
         .header("Accept", MediaTypes.HAL_JSON_VALUE)
-    .when()
+        .when()
         .get("/companies/{id}/languages", sampleCompany.getId())
-    .then()
-        .log().all()
+        .then()
+        .log()
+        .all()
         .status(HttpStatus.OK)
         .body("_embedded.languageList", hasSize(1))
-        .body("_embedded.languageList[0]._links.self.href", response -> equalTo("http://localhost/languages/" + response.path("_embedded.languageList[0].id")));
-        //.body("_links.self.href", response -> equalTo("http://localhost/companies/" + response.path("id") + "/languages"))
-        //TODO: Check self link
+        .body(
+            "_embedded.languageList[0]._links.self.href",
+            response ->
+                equalTo(
+                    "http://localhost/languages/" + response.path("_embedded.languageList[0].id")));
+    // .body("_links.self.href", response -> equalTo("http://localhost/companies/" +
+    // response.path("id") + "/languages"))
+    // TODO: Check self link
 
     verify(companyService).getCompanyLanguages(eq(sampleCompany.getId()));
   }
@@ -130,15 +151,14 @@ class CompanyControllerTest {
     var language2 = new Language("en", "English", "Englisch", Type.LIVING);
     when(languageService.getLanguage(eq(language1.getId()))).thenReturn(Optional.of(language1));
     when(languageService.getLanguage(eq(language2.getId()))).thenReturn(Optional.of(language2));
-    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anyList())).thenAnswer(invocation -> {
-      this.sampleCompany.setLanguages(invocation.getArgument(1));
-      return this.sampleCompany;
-    });
+    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anyList()))
+        .thenAnswer(
+            invocation -> {
+              this.sampleCompany.setLanguages(invocation.getArgument(1));
+              return this.sampleCompany;
+            });
 
-    String[] uuids = new String[] {
-        language1.getId().toString(),
-        language2.getId().toString()
-    };
+    String[] uuids = new String[] {language1.getId().toString(), language2.getId().toString()};
 
     given()
         .webAppContextSetup(context)
@@ -148,12 +168,21 @@ class CompanyControllerTest {
         .when()
         .put("/companies/{id}/languages", sampleCompany.getId())
         .then()
-        .log().all()
+        .log()
+        .all()
         .status(HttpStatus.OK)
         .body("_embedded.languageList", hasSize(2))
-        .body("_embedded.languageList[0]._links.self.href", response -> equalTo("http://localhost/languages/" + response.path("_embedded.languageList[0].id")))
+        .body(
+            "_embedded.languageList[0]._links.self.href",
+            response ->
+                equalTo(
+                    "http://localhost/languages/" + response.path("_embedded.languageList[0].id")))
         .body("_embedded.languageList[0].id", equalTo(uuids[0]))
-        .body("_embedded.languageList[1]._links.self.href", response -> equalTo("http://localhost/languages/" + response.path("_embedded.languageList[1].id")))
+        .body(
+            "_embedded.languageList[1]._links.self.href",
+            response ->
+                equalTo(
+                    "http://localhost/languages/" + response.path("_embedded.languageList[1].id")))
         .body("_embedded.languageList[1].id", equalTo(uuids[1]));
 
     verify(companyService).setCompanyLanguages(eq(this.sampleCompany.getId()), anyList());
@@ -162,15 +191,14 @@ class CompanyControllerTest {
   @Test
   void testSetCompanyLanguagesInvalid() {
     when(languageService.getLanguage(any(UUID.class))).thenReturn(Optional.empty());
-    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anyList())).thenAnswer(invocation -> {
-      this.sampleCompany.setLanguages(invocation.getArgument(1));
-      return this.sampleCompany;
-    });
+    when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anyList()))
+        .thenAnswer(
+            invocation -> {
+              this.sampleCompany.setLanguages(invocation.getArgument(1));
+              return this.sampleCompany;
+            });
 
-    String[] uuids = new String[] {
-        UUID.randomUUID().toString(),
-        UUID.randomUUID().toString()
-    };
+    String[] uuids = new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
 
     given()
         .webAppContextSetup(context)
@@ -180,7 +208,8 @@ class CompanyControllerTest {
         .when()
         .put("/companies/{id}/languages", sampleCompany.getId())
         .then()
-        .log().all()
+        .log()
+        .all()
         .status(HttpStatus.NOT_FOUND)
         .body("status", response -> equalTo(response.statusCode()))
         .body("error", is(not(emptyString())))
@@ -192,9 +221,7 @@ class CompanyControllerTest {
 
   @Test
   void testSetCompanyLanguagesInvalidUUID() {
-    String[] uuids = new String[] {
-        "abcdefghijklmnopqrstuvwxyz12345567890"
-    };
+    String[] uuids = new String[] {"abcdefghijklmnopqrstuvwxyz12345567890"};
 
     given()
         .webAppContextSetup(context)
@@ -204,7 +231,8 @@ class CompanyControllerTest {
         .when()
         .put("/companies/{id}/languages", sampleCompany.getId())
         .then()
-        .log().all()
+        .log()
+        .all()
         .status(HttpStatus.BAD_REQUEST)
         .body("status", response -> equalTo(response.statusCode()))
         .body("error", is(not(emptyString())))
@@ -218,9 +246,9 @@ class CompanyControllerTest {
     given()
         .webAppContextSetup(context)
         .header("Accept", MediaTypes.HAL_JSON_VALUE)
-    .when()
+        .when()
         .get("/companies/{id}", UUID.randomUUID())
-    .then()
+        .then()
         .status(HttpStatus.NOT_FOUND)
         .body("status", response -> equalTo(response.statusCode()))
         .body("error", is(not(emptyString())))
@@ -238,13 +266,17 @@ class CompanyControllerTest {
         .header("Accept", MediaTypes.HAL_JSON_VALUE)
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .body(this.sampleCompany)
-        .log().all()
-    .when()
+        .log()
+        .all()
+        .when()
         .post("/companies")
-    .then()
-        .log().all()
+        .then()
+        .log()
+        .all()
         .status(HttpStatus.CREATED)
-        .body("_links.self.href", response -> equalTo("http://localhost/companies/" + response.path("id")));
+        .body(
+            "_links.self.href",
+            response -> equalTo("http://localhost/companies/" + response.path("id")));
 
     verify(companyService).saveCompany(eq(sampleCompany));
   }
@@ -258,11 +290,13 @@ class CompanyControllerTest {
         .header("Accept", MediaTypes.HAL_JSON_VALUE)
         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         .body(sampleCompany)
-    .when()
+        .when()
         .put("/companies/{id}", sampleCompany.getId())
-    .then()
+        .then()
         .status(HttpStatus.OK)
-        .body("_links.self.href", response -> equalTo("http://localhost/companies/" + response.path("id")));
+        .body(
+            "_links.self.href",
+            response -> equalTo("http://localhost/companies/" + response.path("id")));
 
     verify(companyService).updateCompany(eq(sampleCompany));
   }

@@ -1,6 +1,5 @@
 package de.innovationhub.prox.companyprofileservice.application.service.language;
 
-import com.netflix.discovery.converters.Auto;
 import de.innovationhub.prox.companyprofileservice.domain.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.language.LanguageRepository;
 import de.innovationhub.prox.companyprofileservice.domain.language.Type;
@@ -32,7 +31,7 @@ public class LanguageServiceImpl implements LanguageService {
 
   @Override
   public Iterable<Language> getAllLanguages(Type... types) {
-    if(types == null || types.length == 0) {
+    if (types == null || types.length == 0) {
       return this.getAllLanguages();
     }
     return languageRepository.findAllByTypeIn(Arrays.asList(types));

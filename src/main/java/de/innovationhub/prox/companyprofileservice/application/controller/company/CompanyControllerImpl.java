@@ -13,14 +13,12 @@ import de.innovationhub.prox.companyprofileservice.domain.language.Language;
 import java.util.ArrayList;
 import java.util.UUID;
 import javax.validation.Valid;
-import org.apache.commons.codec.language.bm.Lang;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,7 +30,11 @@ public class CompanyControllerImpl implements CompanyController {
   private final LanguageRepresentationModelAssembler languageRepresentationModelAssembler;
 
   @Autowired
-  public CompanyControllerImpl(CompanyService companyService, LanguageService languageService, CompanyRepresentationModelAssembler companyRepresentationModelAssembler, LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
+  public CompanyControllerImpl(
+      CompanyService companyService,
+      LanguageService languageService,
+      CompanyRepresentationModelAssembler companyRepresentationModelAssembler,
+      LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
     this.companyService = companyService;
     this.languageService = languageService;
     this.companyRepresentationModelAssembler = companyRepresentationModelAssembler;
@@ -54,8 +56,7 @@ public class CompanyControllerImpl implements CompanyController {
   @Override
   public ResponseEntity<CollectionModel<EntityModel<Company>>> getAllCompanies() {
     var collectionModel =
-        companyRepresentationModelAssembler.toCollectionModel(
-            companyService.getAllCompanies());
+        companyRepresentationModelAssembler.toCollectionModel(companyService.getAllCompanies());
     return ResponseEntity.ok(collectionModel);
   }
 
@@ -67,28 +68,31 @@ public class CompanyControllerImpl implements CompanyController {
 
   @Override
   public ResponseEntity<CollectionModel<EntityModel<Language>>> getCompanyLanguages(UUID id) {
-    return ResponseEntity.ok(languageRepresentationModelAssembler.toCollectionModel(companyService.getCompanyLanguages(id)));
+    return ResponseEntity.ok(
+        languageRepresentationModelAssembler.toCollectionModel(
+            companyService.getCompanyLanguages(id)));
   }
 
   @Override
-  public ResponseEntity<CollectionModel<EntityModel<Language>>> putCompanyLanguages(UUID id,
-      String[] languageIds) {
+  public ResponseEntity<CollectionModel<EntityModel<Language>>> putCompanyLanguages(
+      UUID id, String[] languageIds) {
     var languages = new ArrayList<Language>();
 
-      for (String strId : languageIds) {
-        var languageId = UUID.fromString(strId);
-        languages.add(languageService.getLanguage(languageId).orElseThrow(LanguageNotFoundException::new));
-      }
+    for (String strId : languageIds) {
+      var languageId = UUID.fromString(strId);
+      languages.add(
+          languageService.getLanguage(languageId).orElseThrow(LanguageNotFoundException::new));
+    }
 
     var company = companyService.setCompanyLanguages(id, languages);
-    return ResponseEntity.ok(languageRepresentationModelAssembler.toCollectionModel(company.getLanguages()));
+    return ResponseEntity.ok(
+        languageRepresentationModelAssembler.toCollectionModel(company.getLanguages()));
   }
 
   @Override
   public ResponseEntity<EntityModel<Company>> saveCompany(@Valid Company company) {
     var entityModel =
-        this.companyRepresentationModelAssembler.toModel(
-            this.companyService.saveCompany(company));
+        this.companyRepresentationModelAssembler.toModel(this.companyService.saveCompany(company));
     return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
   }
 

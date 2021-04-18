@@ -1,7 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.language;
 
 import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
-import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.exception.language.LanguageNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.language.LanguageService;
@@ -23,7 +22,9 @@ public class LanguageControllerImpl implements LanguageController {
   private final LanguageRepresentationModelAssembler languageRepresentationModelAssembler;
 
   @Autowired
-  public LanguageControllerImpl(LanguageService languageService, LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
+  public LanguageControllerImpl(
+      LanguageService languageService,
+      LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
     this.languageService = languageService;
     this.languageRepresentationModelAssembler = languageRepresentationModelAssembler;
   }
@@ -36,14 +37,18 @@ public class LanguageControllerImpl implements LanguageController {
 
   @Override
   public ResponseEntity<CollectionModel<EntityModel<Language>>> getAllLanguages(Type[] types) {
-    var collectionModel = languageRepresentationModelAssembler.toCollectionModel(
-        languageService.getAllLanguages(types));
+    var collectionModel =
+        languageRepresentationModelAssembler.toCollectionModel(
+            languageService.getAllLanguages(types));
     return ResponseEntity.ok(collectionModel);
   }
 
   @Override
   public ResponseEntity<EntityModel<Language>> getLanguage(UUID id) {
-    return this.languageService.getLanguage(id).map(languageRepresentationModelAssembler::toModel).map(ResponseEntity::ok).orElseThrow(
-        LanguageNotFoundException::new);
+    return this.languageService
+        .getLanguage(id)
+        .map(languageRepresentationModelAssembler::toModel)
+        .map(ResponseEntity::ok)
+        .orElseThrow(LanguageNotFoundException::new);
   }
 }

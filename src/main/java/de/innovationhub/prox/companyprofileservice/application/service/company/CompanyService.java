@@ -3,7 +3,6 @@ package de.innovationhub.prox.companyprofileservice.application.service.company;
 import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.language.Language;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +20,7 @@ public interface CompanyService {
   default void deleteCompany(Company company) {
     this.deleteCompanyById(company.getId());
   }
+
   void deleteCompanyById(UUID id);
 
   default Iterable<Language> getCompanyLanguages(UUID id) {
@@ -29,10 +29,11 @@ public interface CompanyService {
 
   default Company setCompanyLanguages(UUID id, List<Language> languages) {
     return this.getCompanyById(id)
-        .map(company -> {
-          company.setLanguages(languages);
-          return company;
-        })
+        .map(
+            company -> {
+              company.setLanguages(languages);
+              return company;
+            })
         .orElseThrow(CompanyNotFoundException::new);
   }
 }
