@@ -19,19 +19,19 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequestMapping("companies")
-public interface CompanyImageController {
+public interface CompanyLogoController {
   @GetMapping(value = "/{id}/image", produces = "image/*")
-  ResponseEntity<byte[]> getCompanyImage(@PathVariable UUID id);
+  ResponseEntity<byte[]> getCompanyLogo(@PathVariable UUID id);
 
   @PostMapping(
       value = "/{id}/image",
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-  ResponseEntity<Void> postCompanyImage(@PathVariable UUID id,
+  ResponseEntity<Void> postCompanyLogo(@PathVariable UUID id,
       @RequestPart(value = "image", required = true)
           MultipartFile image,
       HttpServletRequest request);
 
 
   @DeleteMapping(value = "/{id}/image")
-  ResponseEntity<Void> deleteCompanyImage(@PathVariable UUID id, HttpServletRequest request);
+  ResponseEntity<Void> deleteCompanyLogo(@PathVariable UUID id, HttpServletRequest request);
 }

@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImage;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyRepository;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageRepository;
@@ -29,7 +29,7 @@ class CompanyServiceImplTest {
 
   @MockBean LanguageRepository languageRepository;
 
-  @MockBean CompanyImageService companyImageService;
+  @MockBean CompanyLogoService companyLogoService;
 
   @Autowired CompanyService companyService;
 
@@ -107,18 +107,11 @@ class CompanyServiceImplTest {
   @DisplayName("Should delete company")
   @Test
   void shouldDeleteCompany() {
+    when(companyRepository.findById(eq(sampleCompany.getId())))
+        .thenReturn(Optional.of(sampleCompany));
+
     companyService.deleteById(sampleCompany.getId());
 
     verify(companyRepository).deleteById(eq(sampleCompany.getId()));
-  }
-
-  @DisplayName("Should delete company image")
-  @Test
-  void shouldDeleteCompanyImage() {
-    CompanyImage companyImage = new CompanyImage(UUID.randomUUID(), 4567L, "image/png");
-    sampleCompany.setCompanyImage(companyImage);
-    companyService.deleteById(sampleCompany.getId());
-
-    verify(companyImageService).deleteById(eq(sampleCompany.getCompanyImage().getId()));
   }
 }

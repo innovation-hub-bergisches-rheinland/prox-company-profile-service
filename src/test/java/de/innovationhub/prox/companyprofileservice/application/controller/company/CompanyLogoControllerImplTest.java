@@ -7,9 +7,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyImageService;
+import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyLogoService;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImage;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,11 +26,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-/*@WebMvcTest(controllers = CompanyImageController.class)
-class CompanyImageControllerImplTest {
+/*@WebMvcTest(controllers = CompanyLogoController.class)
+class CompanyLogoControllerImplTest {
 
   @MockBean
-  CompanyImageService companyImageService;
+  CompanyLogoService companyLogoService;
 
   @MockBean
   CompanyService companyService;
@@ -47,9 +47,9 @@ class CompanyImageControllerImplTest {
 
   @DisplayName("GET /companies/{id}/image should return OK")
   @Test
-  void getCompanyImageShouldReturnInternalServerError() {
-    when(companyImageService.getCompanyImage(any())).thenReturn(mock(InputStream.class));
-    when(companyImageService.getById(any())).thenReturn(Optional.of(mock(CompanyImage.class)));
+  void getCompanyLogoShouldReturnInternalServerError() {
+    when(companyLogoService.getCompanyLogo(any())).thenReturn(mock(InputStream.class));
+    when(companyLogoService.getById(any())).thenReturn(Optional.of(mock(CompanyLogo.class)));
 
     given()
         .webAppContextSetup(context)
@@ -62,9 +62,9 @@ class CompanyImageControllerImplTest {
 
   @DisplayName("POST /companies/{id}/image should return OK")
   @Test
-  void postCompanyImageShouldReturnInternalServerError() throws IOException {
-    when(companyImageService.setCompanyImage(any(), any(InputStream.class))).thenAnswer(invocation -> invocation.getArgument(0));
-    when(companyImageService.getById(any())).thenReturn(Optional.of(mock(CompanyImage.class)));
+  void postCompanyLogoShouldReturnInternalServerError() throws IOException {
+    when(companyLogoService.setCompanyLogo(any(), any(InputStream.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    when(companyLogoService.getById(any())).thenReturn(Optional.of(mock(CompanyLogo.class)));
 
     given()
         .webAppContextSetup(context)
@@ -75,14 +75,14 @@ class CompanyImageControllerImplTest {
         .then()
         .status(HttpStatus.OK);
 
-    verify(companyImageService).setCompanyImage(any(), any(InputStream.class));
+    verify(companyLogoService).setCompanyLogo(any(), any(InputStream.class));
   }
 
   @DisplayName("DELETE /companies/{id}/image should return OK")
   @Test
-  void deleteCompanyImageShouldReturnInternalServerError() {
-    when(companyImageService.deleteCompanyImage(any())).thenAnswer(invocation -> invocation.getArgument(0));
-    when(companyImageService.getById(any())).thenReturn(Optional.of(mock(CompanyImage.class)));
+  void deleteCompanyLogoShouldReturnInternalServerError() {
+    when(companyLogoService.deleteCompanyLogo(any())).thenAnswer(invocation -> invocation.getArgument(0));
+    when(companyLogoService.getById(any())).thenReturn(Optional.of(mock(CompanyLogo.class)));
 
     given()
         .webAppContextSetup(context)
@@ -92,6 +92,6 @@ class CompanyImageControllerImplTest {
         .then()
         .status(HttpStatus.NO_CONTENT);
 
-    verify(companyImageService).deleteCompanyImage(any());
+    verify(companyLogoService).deleteCompanyLogo(any());
   }
 }*/

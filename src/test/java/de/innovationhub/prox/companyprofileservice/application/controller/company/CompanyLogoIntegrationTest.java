@@ -2,10 +2,11 @@ package de.innovationhub.prox.companyprofileservice.application.controller.compa
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 
-import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyImageService;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImage;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImageRepository;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImageStore;
+import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyLogoService;
+import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyLogoServiceImpl;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogoRepository;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogoStore;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyRepository;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageRepository;
 import de.innovationhub.prox.companyprofileservice.domain.company.quarter.QuarterRepository;
@@ -19,30 +20,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(
-    classes = {
-        CompanyImageControllerImpl.class,
-        CompanyImageService.class,
-        CompanyImageStore.class,
-        CompanyImageRepository.class
-    }
-)
-class CompanyImageIntegrationTest {
+@SpringBootTest
+class CompanyLogoIntegrationTest {
 
   @Autowired
   WebApplicationContext context;
 
   @Autowired
-  CompanyImageRepository companyImageRepository;
+  CompanyLogoRepository companyLogoRepository;
 
   @Autowired
-  CompanyImageStore companyImageStore;
+  CompanyLogoStore companyLogoStore;
 
   @Autowired
-  CompanyImageService companyImageService;
+  CompanyLogoService companyLogoService;
 
   @MockBean
   CompanyRepository companyRepository;

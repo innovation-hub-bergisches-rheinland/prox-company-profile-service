@@ -4,7 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import de.innovationhub.prox.companyprofileservice.application.controller.company.CompanyController;
-import de.innovationhub.prox.companyprofileservice.application.controller.company.CompanyImageController;
+import de.innovationhub.prox.companyprofileservice.application.controller.company.CompanyLogoController;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -31,7 +31,7 @@ public class CompanyRepresentationModelAssembler
           linkTo(methodOn(CompanyController.class).getCompanyQuarters(company.getId()))
               .withRel("quarters"));
       resource.add(
-          linkTo(methodOn(CompanyImageController.class).getCompanyImage(company.getId())).withRel("image"));
+          linkTo(methodOn(CompanyLogoController.class).getCompanyLogo(company.getId())).withRel("image"));
     }
   }
 

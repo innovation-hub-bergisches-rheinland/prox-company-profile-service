@@ -2,9 +2,9 @@ package de.innovationhub.prox.companyprofileservice.application.service.company;
 
 import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImage;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImageRepository;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImageStore;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogoRepository;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogoStore;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,74 +22,74 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CompanyImageServiceImpl implements CompanyImageService {
+public class CompanyLogoServiceImpl implements CompanyLogoService {
 
-  private final CompanyImageRepository companyImageRepository;
-  private final CompanyImageStore companyImageStore;
+  private final CompanyLogoRepository companyLogoRepository;
+  private final CompanyLogoStore companyLogoStore;
   private final ModelMapper modelMapper;
   private final TikaConfig tikaConfig;
 
   @Autowired
-  public CompanyImageServiceImpl(CompanyImageRepository companyImageRepository, CompanyImageStore companyImageStore) {
-    this.companyImageRepository = companyImageRepository;
-    this.companyImageStore = companyImageStore;
+  public CompanyLogoServiceImpl(CompanyLogoRepository companyLogoRepository, CompanyLogoStore companyLogoStore) {
+    this.companyLogoRepository = companyLogoRepository;
+    this.companyLogoStore = companyLogoStore;
     this.modelMapper = new ModelMapper();
     this.tikaConfig = TikaConfig.getDefaultConfig();
   }
 
   @Override
-  public Iterable<CompanyImage> getAll() {
-    return this.companyImageRepository.findAll();
+  public Iterable<CompanyLogo> getAll() {
+    return this.companyLogoRepository.findAll();
   }
 
   @Override
-  public Optional<CompanyImage> getById(UUID uuid) {
-    return this.companyImageRepository.findById(uuid);
+  public Optional<CompanyLogo> getById(UUID uuid) {
+    return this.companyLogoRepository.findById(uuid);
   }
 
   @Override
-  public CompanyImage save(CompanyImage entity) {
-    return this.companyImageRepository.save(entity);
+  public CompanyLogo save(CompanyLogo entity) {
+    return this.companyLogoRepository.save(entity);
   }
 
   @Override
-  public CompanyImage update(UUID uuid, CompanyImage entity) {
+  public CompanyLogo update(UUID uuid, CompanyLogo entity) {
     return this.getById(uuid)
         .map(
             c -> {
               modelMapper.map(entity, c);
               return c;
             })
-        .map(companyImageRepository::save)
+        .map(companyLogoRepository::save)
         .orElseThrow(RuntimeException::new);
   }
 
   @Override
   public void deleteById(UUID uuid) {
-    this.companyImageRepository.deleteById(uuid);
+    this.companyLogoRepository.deleteById(uuid);
   }
 
 
   @Override
-  public InputStream getCompanyImage(CompanyImage companyImage) {
-    InputStream is = companyImageStore.getContent(companyImage);
+  public InputStream getCompanyLogo(CompanyLogo companyLogo) {
+    InputStream is = companyLogoStore.getContent(companyLogo);
     return is;
   }
 
   @Override
-  public CompanyImage setCompanyImage(CompanyImage companyImage, InputStream inputStream)
+  public CompanyLogo setCompanyLogo(CompanyLogo companyLogo, InputStream inputStream)
       throws IOException {
     Detector detector = tikaConfig.getDetector();
     byte[] bytes = inputStream.readAllBytes();
     TikaInputStream tikaInputStream = TikaInputStream.get(new ByteArrayInputStream(bytes));
     MediaType mediaType = detector.detect(tikaInputStream, new Metadata());
-    companyImage.setMimeType(mediaType.getType() + "/" + mediaType.getSubtype());
-    CompanyImage companyImage1 = companyImageStore.setContent(companyImage, new ByteArrayInputStream(bytes));
-    return this.save(companyImage1);
+    companyLogo.setMimeType(mediaType.getType() + "/" + mediaType.getSubtype());
+    CompanyLogo companyLogo1 = companyLogoStore.setContent(companyLogo, new ByteArrayInputStream(bytes));
+    return this.save(companyLogo1);
   }
 
   @Override
-  public CompanyImage deleteCompanyImage(CompanyImage companyImage) {
-    return companyImageStore.unsetContent(companyImage);
+  public CompanyLogo deleteCompanyLogo(CompanyLogo companyLogo) {
+    return companyLogoStore.unsetContent(companyLogo);
   }
 }

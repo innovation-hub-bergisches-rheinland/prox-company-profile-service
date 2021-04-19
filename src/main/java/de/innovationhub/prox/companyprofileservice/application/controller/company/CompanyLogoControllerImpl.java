@@ -1,9 +1,9 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
-import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyImageService;
+import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyLogoService;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImage;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -15,28 +15,28 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-public class CompanyImageControllerImpl implements CompanyImageController {
+public class CompanyLogoControllerImpl implements CompanyLogoController {
 
-  private final CompanyImageService companyImageService;
+  private final CompanyLogoService companyLogoService;
   private final CompanyService companyService;
 
-  public CompanyImageControllerImpl(CompanyImageService companyImageService, CompanyService companyService) {
-    this.companyImageService = companyImageService;
+  public CompanyLogoControllerImpl(CompanyLogoService companyLogoService, CompanyService companyService) {
+    this.companyLogoService = companyLogoService;
     this.companyService = companyService;
   }
 
   @Override
-  public ResponseEntity<byte[]> getCompanyImage(UUID id) {
+  public ResponseEntity<byte[]> getCompanyLogo(UUID id) {
     Company company = this.companyService.getById(id).orElseThrow(() -> new ResponseStatusException(
         HttpStatus.NOT_FOUND, "Image of company with id " + id + " not found"));
-    var companyImage = company.getCompanyImage();
-    if(companyImage == null) {
+    var companyLogo = company.getCompanyLogo();
+    if(companyLogo == null) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Image of company with id " + id + " not found");
     }
-    try(InputStream is = companyImageService.getCompanyImage(companyImage)) {
+    try(InputStream is = companyLogoService.getCompanyLogo(companyLogo)) {
       var bytes = is.readAllBytes();
-      return ResponseEntity.status(HttpStatus.OK).header("Content-Type", companyImage.getMimeType()).body(bytes);
+      return ResponseEntity.status(HttpStatus.OK).header("Content-Type", companyLogo.getMimeType()).body(bytes);
     } catch (IOException ioException) {
       ioException.printStackTrace();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -44,17 +44,17 @@ public class CompanyImageControllerImpl implements CompanyImageController {
   }
 
   @Override
-  public ResponseEntity<Void> postCompanyImage(UUID id, MultipartFile image,
+  public ResponseEntity<Void> postCompanyLogo(UUID id, MultipartFile image,
       HttpServletRequest request) {
     Company company = this.companyService.getById(id).orElseThrow(() -> new ResponseStatusException(
         HttpStatus.NOT_FOUND, "Image of company with id " + id + " not found"));
     try {
-      CompanyImage companyImage = company.getCompanyImage();
-      if(companyImage == null) {
-        companyImage = new CompanyImage();
+      CompanyLogo companyLogo = company.getCompanyLogo();
+      if(companyLogo == null) {
+        companyLogo = new CompanyLogo();
       }
-      companyImage = this.companyImageService.setCompanyImage(companyImage, image.getInputStream());
-      company.setCompanyImage(companyImage);
+      companyLogo = this.companyLogoService.setCompanyLogo(companyLogo, image.getInputStream());
+      company.setCompanyLogo(companyLogo);
       this.companyService.save(company);
       return ResponseEntity.ok().build();
     } catch (IOException e) {
@@ -64,18 +64,18 @@ public class CompanyImageControllerImpl implements CompanyImageController {
   }
 
   @Override
-  public ResponseEntity<Void> deleteCompanyImage(UUID id, HttpServletRequest request) {
+  public ResponseEntity<Void> deleteCompanyLogo(UUID id, HttpServletRequest request) {
     Company company = this.companyService.getById(id).orElseThrow(() -> new ResponseStatusException(
         HttpStatus.NOT_FOUND, "Image of company with id " + id + " not found"));
-    var companyImage = company.getCompanyImage();
-    if(companyImage == null) {
+    var companyLogo = company.getCompanyLogo();
+    if(companyLogo == null) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Image of company with id " + id + " not found");
     }
-    company.setCompanyImage(null);
+    company.setCompanyLogo(null);
     this.companyService.save(company);
-    this.companyImageService.deleteCompanyImage(companyImage);
-    this.companyImageService.deleteById(companyImage.getId());
+    this.companyLogoService.deleteCompanyLogo(companyLogo);
+    this.companyLogoService.deleteById(companyLogo.getId());
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

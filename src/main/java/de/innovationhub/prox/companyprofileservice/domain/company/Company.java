@@ -35,7 +35,7 @@ public class Company extends AbstractEntity {
 
   @ManyToMany @JsonIgnore private Set<Language> languages;
 
-  @OneToOne @JsonIgnore private CompanyImage companyImage;
+  @OneToOne @JsonIgnore private CompanyLogo companyLogo;
 
   @ElementCollection private Set<Branch> branches;
 

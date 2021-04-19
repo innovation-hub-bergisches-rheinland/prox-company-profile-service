@@ -9,6 +9,6 @@ import org.springframework.content.commons.repository.ContentStore;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompanyImageStore extends ContentStore<CompanyImage, UUID> {
+public interface CompanyLogoStore extends ContentStore<CompanyLogo, UUID> {
 
 }

@@ -22,7 +22,7 @@ import org.springframework.content.commons.annotations.MimeType;
 @ToString
 @Entity
 @AllArgsConstructor
-public class CompanyImage extends AbstractEntity {
+public class CompanyLogo extends AbstractEntity {
   @ContentId
   private UUID contentId;
 
