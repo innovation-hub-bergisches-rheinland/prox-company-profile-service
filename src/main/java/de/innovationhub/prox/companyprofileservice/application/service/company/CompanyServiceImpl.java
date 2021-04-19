@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class CompanyServiceImpl implements CompanyService {
 
   private final CompanyRepository companyRepository;
+  private final CompanyImageService companyImageService;
   private final LanguageService languageService;
   private final QuarterService quarterService;
   private final ModelMapper modelMapper;
@@ -26,9 +27,11 @@ public class CompanyServiceImpl implements CompanyService {
   @Autowired
   public CompanyServiceImpl(
       CompanyRepository companyRepository,
+      CompanyImageService companyImageService,
       LanguageService languageService,
       QuarterService quarterService) {
     this.companyRepository = companyRepository;
+    this.companyImageService = companyImageService;
     this.languageService = languageService;
     this.quarterService = quarterService;
     this.modelMapper = new ModelMapper();
@@ -68,7 +71,14 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public void deleteById(UUID id) {
-    this.companyRepository.deleteById(id);
+    this.getById(id).ifPresentOrElse(
+        c -> {
+          this.companyImageService.deleteCompanyImage(c.getCompanyImage());
+          this.companyRepository.deleteById(id);
+        }, () -> {
+          throw new CompanyNotFoundException();
+        }
+    );
   }
 
   @Override

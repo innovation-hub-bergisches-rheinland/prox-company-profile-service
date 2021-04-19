@@ -1,25 +1,33 @@
 package de.innovationhub.prox.companyprofileservice.domain.company;
 
-import javax.persistence.Embeddable;
+import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
+import java.util.UUID;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+import org.springframework.content.commons.annotations.ContentId;
+import org.springframework.content.commons.annotations.ContentLength;
+import org.springframework.content.commons.annotations.MimeType;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @ToString
-@Embeddable
-public class CompanyImage {
-  @NotBlank private String filename;
+@Entity
+@AllArgsConstructor
+public class CompanyImage extends AbstractEntity {
+  @ContentId
+  private UUID contentId;
 
-  public CompanyImage(String filename) {
-    if (filename == null || filename.isBlank()) {
-      throw new IllegalArgumentException("Filename cannot be null or empty");
-    }
-    this.filename = filename;
-  }
+  @ContentLength
+  private Long contentLength;
+
+  private String mimeType;
 }

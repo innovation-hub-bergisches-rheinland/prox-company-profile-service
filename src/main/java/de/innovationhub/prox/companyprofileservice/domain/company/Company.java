@@ -10,6 +10,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -33,6 +34,8 @@ public class Company extends AbstractEntity {
   @ManyToMany @JsonIgnore private Set<Quarter> quarters;
 
   @ManyToMany @JsonIgnore private Set<Language> languages;
+
+  @OneToOne @JsonIgnore private CompanyImage companyImage;
 
   @ElementCollection private Set<Branch> branches;
 

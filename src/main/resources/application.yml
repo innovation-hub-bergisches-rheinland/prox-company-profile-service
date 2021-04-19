@@ -15,6 +15,9 @@ server:
 spring:
   application:
     name: company-profile-service
+  content:
+    fs:
+      filesystem-root: ${FS_ROOT:./data/}
   datasource:
     password: company-profile-service
     url: jdbc:postgresql://company-profile-db:5432/company-profile-db

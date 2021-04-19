@@ -7,10 +7,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyImage;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyRepository;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageRepository;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,8 @@ class CompanyServiceImplTest {
   @MockBean CompanyRepository companyRepository;
 
   @MockBean LanguageRepository languageRepository;
+
+  @MockBean CompanyImageService companyImageService;
 
   @Autowired CompanyService companyService;
 
@@ -106,5 +110,15 @@ class CompanyServiceImplTest {
     companyService.deleteById(sampleCompany.getId());
 
     verify(companyRepository).deleteById(eq(sampleCompany.getId()));
+  }
+
+  @DisplayName("Should delete company image")
+  @Test
+  void shouldDeleteCompanyImage() {
+    CompanyImage companyImage = new CompanyImage(UUID.randomUUID(), 4567L, "image/png");
+    sampleCompany.setCompanyImage(companyImage);
+    companyService.deleteById(sampleCompany.getId());
+
+    verify(companyImageService).deleteById(eq(sampleCompany.getCompanyImage().getId()));
   }
 }
