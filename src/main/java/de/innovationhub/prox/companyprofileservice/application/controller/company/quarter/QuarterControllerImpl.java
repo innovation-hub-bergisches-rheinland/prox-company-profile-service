@@ -62,4 +62,10 @@ public class QuarterControllerImpl implements QuarterController {
     return ResponseEntity.ok(
         quarterRepresentationModelAssembler.toModel(this.quarterService.update(id, quarter)));
   }
+
+  @Override
+  public ResponseEntity<?> deleteQuarter(UUID id) {
+    this.quarterService.deleteById(id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
 }

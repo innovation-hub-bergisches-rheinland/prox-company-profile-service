@@ -14,6 +14,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -91,4 +92,25 @@ public interface QuarterController {
   ResponseEntity<EntityModel<Quarter>> updateQuarter(
       @PathVariable("id") @Parameter(description = "UUID of quarter") UUID id,
       @RequestBody Quarter quarter);
+
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid UUID",
+      content =
+      @Content(
+          mediaType = MediaType.APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "No quarter with the given ID found",
+      content =
+      @Content(
+          mediaType = MediaType.APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "200", description = "OK")
+  @Operation(summary = "Delete quarter")
+  @DeleteMapping(
+      value = "/{id}")
+  ResponseEntity<?> deleteQuarter(
+      @PathVariable("id") @Parameter(description = "UUID of quarter") UUID id);
 }

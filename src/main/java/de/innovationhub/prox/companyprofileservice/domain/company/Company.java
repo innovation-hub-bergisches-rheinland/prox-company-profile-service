@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -31,13 +30,9 @@ public class Company extends AbstractEntity {
 
   @ManyToOne @JsonIgnore private Quarter headquarter;
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JsonIgnore
-  private Set<Quarter> quarters;
+  @ManyToMany @JsonIgnore private Set<Quarter> quarters;
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JsonIgnore
-  private Set<Language> languages;
+  @ManyToMany @JsonIgnore private Set<Language> languages;
 
   @ElementCollection private Set<Branch> branches;
 
@@ -47,14 +42,15 @@ public class Company extends AbstractEntity {
       Set<Quarter> quarters,
       Set<Language> languages,
       Set<Branch> branches) {
-    if (information == null) {
-      throw new IllegalArgumentException("Company Information cannot be null");
-    }
-    this.information = information;
-    this.headquarter = headquarter;
-    this.quarters = quarters;
-    this.languages = languages;
-    this.branches = branches;
+    this.setInformation(information);
+    this.setHeadquarter(headquarter);
+    this.setQuarters(quarters);
+    this.setLanguages(languages);
+    this.setBranches(branches);
+  }
+
+  public Company(CompanyInformation information) {
+    this.setInformation(information);
   }
 
   public void setInformation(CompanyInformation information) {
