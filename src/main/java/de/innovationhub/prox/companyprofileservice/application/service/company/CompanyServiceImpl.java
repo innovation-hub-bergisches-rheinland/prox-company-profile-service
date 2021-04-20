@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +31,7 @@ public class CompanyServiceImpl implements CompanyService {
   @Autowired
   public CompanyServiceImpl(
       CompanyRepository companyRepository,
-      CompanyLogoService companyLogoService,
+      @Lazy CompanyLogoService companyLogoService,
       LanguageService languageService,
       QuarterService quarterService) {
     this.companyRepository = companyRepository;
@@ -76,7 +77,7 @@ public class CompanyServiceImpl implements CompanyService {
   public void deleteById(UUID id) {
     this.getById(id).ifPresentOrElse(
         c -> {
-          this.deleteCompanyLogo(c.getId());
+          this.companyLogoService.deleteCompanyLogo(c.getId());
           this.companyRepository.deleteById(id);
         }, () -> {
           throw new CompanyNotFoundException();
@@ -146,34 +147,5 @@ public class CompanyServiceImpl implements CompanyService {
                               "Quarter with id " + quarterId + " not found"));
             })
         .orElseThrow(CompanyNotFoundException::new);
-  }
-
-  @Override
-  public Optional<CompanyLogo> getCompanyLogo(UUID companyId) {
-    Company company = this.getById(companyId).orElseThrow(RuntimeException::new);
-    return Optional.ofNullable(company.getCompanyLogo());
-  }
-
-  @Override
-  public Optional<CompanyLogo> setCompanyLogo(UUID companyId, InputStream inputStream)
-      throws IOException {
-    Company company = this.getById(companyId).orElseThrow(RuntimeException::new);
-    var optCompanyLogo = companyLogoService.setCompanyLogo(company.getCompanyLogo(), inputStream);
-    if(optCompanyLogo.isPresent()) {
-      var companyLogo = optCompanyLogo.get();
-      company.setCompanyLogo(companyLogo);
-      this.save(company);
-      return Optional.of(companyLogo);
-    }
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<CompanyLogo> deleteCompanyLogo(UUID companyId) {
-    Company company = this.getById(companyId).orElseThrow(RuntimeException::new);
-    CompanyLogo companyLogo = company.getCompanyLogo();
-    company.setCompanyLogo(null);
-    this.save(company);
-    return companyLogoService.deleteCompanyLogo(companyLogo);
   }
 }

@@ -101,7 +101,7 @@ class CompanyLogoIntegrationTest {
         .then()
         .status(HttpStatus.OK);
 
-    var companylogo = companyService.getCompanyLogo(company.getId());
+    var companylogo = companyLogoService.getCompanyLogo(company.getId());
     var optIs = companyLogoService.getCompanyLogoAsStream(companylogo.get());
     assertArrayEquals(new FileInputStream(file).readAllBytes(), optIs.get().readAllBytes());
   }
@@ -123,7 +123,7 @@ class CompanyLogoIntegrationTest {
         .then()
         .status(HttpStatus.NO_CONTENT);
 
-    assertTrue(companyService.getCompanyLogo(company.getId()).isEmpty());
+    assertTrue(companyLogoService.getCompanyLogo(company.getId()).isEmpty());
   }
 
 }

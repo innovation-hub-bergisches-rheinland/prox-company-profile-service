@@ -31,8 +31,4 @@ public interface CompanyService extends CrudService<Company, UUID> {
   Optional<Quarter> getCompanyHeadquarter(UUID id);
 
   Quarter setCompanyHeadquarter(UUID id, UUID quarterId);
-
-  Optional<CompanyLogo> getCompanyLogo(UUID companyId);
-  Optional<CompanyLogo> setCompanyLogo(UUID companyId, InputStream inputStream) throws IOException;
-  Optional<CompanyLogo> deleteCompanyLogo(UUID companyId);
 }

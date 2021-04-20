@@ -35,9 +35,6 @@ import org.springframework.web.context.WebApplicationContext;
 class CompanyLogoControllerImplTest {
 
   @MockBean
-  CompanyService companyService;
-
-  @MockBean
   CompanyLogoService companyLogoService;
 
   @Autowired
@@ -57,7 +54,7 @@ class CompanyLogoControllerImplTest {
     SecureRandom.getInstanceStrong().nextBytes(bytes);
     InputStream is = new ByteArrayInputStream(bytes);
     CompanyLogo companyLogo = new CompanyLogo(UUID.randomUUID(), 12315L, "image/png");
-    when(companyService.getCompanyLogo(any())).thenReturn(Optional.of(companyLogo));
+    when(companyLogoService.getCompanyLogo(any())).thenReturn(Optional.of(companyLogo));
     when(companyLogoService.getCompanyLogoAsStream(any())).thenReturn(Optional.of(is));
 
     given()
@@ -68,13 +65,14 @@ class CompanyLogoControllerImplTest {
         .then()
         .status(HttpStatus.OK);
 
-    verify(companyService).getCompanyLogo(any());
+    verify(companyLogoService).getCompanyLogo(any());
+    verify(companyLogoService).getCompanyLogoAsStream(any());
   }
 
   @DisplayName("GET /companies/{id}/image should return NOT_FOUND")
   @Test
   void getCompanyLogoShouldReturnNotFound() throws NoSuchAlgorithmException {
-    when(companyService.getCompanyLogo(any())).thenReturn(Optional.empty());
+    when(companyLogoService.getCompanyLogo(any())).thenReturn(Optional.empty());
 
     given()
         .webAppContextSetup(context)
@@ -84,14 +82,14 @@ class CompanyLogoControllerImplTest {
         .then()
         .status(HttpStatus.NOT_FOUND);
 
-    verify(companyService).getCompanyLogo(any());
+    verify(companyLogoService).getCompanyLogo(any());
   }
 
   @DisplayName("POST /companies/{id}/image should return OK")
   @Test
   void postCompanyLogoShouldReturnOk() throws IOException {
     CompanyLogo companyLogo = new CompanyLogo(UUID.randomUUID(), 12315L, "image/png");
-    when(companyService.setCompanyLogo(any(), any(InputStream.class))).thenReturn(Optional.of(companyLogo));
+    when(companyLogoService.setCompanyLogo(any(), any(InputStream.class))).thenReturn(Optional.of(companyLogo));
 
     given()
         .webAppContextSetup(context)
@@ -102,13 +100,13 @@ class CompanyLogoControllerImplTest {
         .then()
         .status(HttpStatus.OK);
 
-    verify(companyService).setCompanyLogo(any(), any(InputStream.class));
+    verify(companyLogoService).setCompanyLogo(any(), any(InputStream.class));
   }
 
   @DisplayName("POST /companies/{id}/image should return INTERNAL_SERVER_ERROR")
   @Test
   void postCompanyLogoShouldReturnInternalServerError() throws IOException {
-    when(companyService.setCompanyLogo(any(), any(InputStream.class))).thenReturn(Optional.empty());
+    when(companyLogoService.setCompanyLogo(any(), any(InputStream.class))).thenReturn(Optional.empty());
 
     given()
         .webAppContextSetup(context)
@@ -119,14 +117,14 @@ class CompanyLogoControllerImplTest {
         .then()
         .status(HttpStatus.INTERNAL_SERVER_ERROR);
 
-    verify(companyService).setCompanyLogo(any(), any(InputStream.class));
+    verify(companyLogoService).setCompanyLogo(any(), any(InputStream.class));
   }
 
   @DisplayName("DELETE /companies/{id}/image should return NO_CONTENT")
   @Test
   void postCompanyLogoShouldReturnNoContent() throws IOException {
     CompanyLogo companyLogo = new CompanyLogo(UUID.randomUUID(), 12315L, "image/png");
-    when(companyService.deleteCompanyLogo(any())).thenReturn(Optional.of(companyLogo));
+    when(companyLogoService.deleteCompanyLogo(any())).thenReturn(Optional.of(companyLogo));
 
     given()
         .webAppContextSetup(context)
@@ -136,14 +134,14 @@ class CompanyLogoControllerImplTest {
         .then()
         .status(HttpStatus.NO_CONTENT);
 
-    verify(companyService).deleteCompanyLogo(any());
+    verify(companyLogoService).deleteCompanyLogo(any());
   }
 
   @DisplayName("DELETE /companies/{id}/image should return NOT_FOUND")
   @Test
   void postCompanyLogoShouldReturnNotFound() throws IOException {
     CompanyLogo companyLogo = new CompanyLogo(UUID.randomUUID(), 12315L, "image/png");
-    when(companyService.deleteCompanyLogo(any())).thenReturn(Optional.empty());
+    when(companyLogoService.deleteCompanyLogo(any())).thenReturn(Optional.empty());
 
     given()
         .webAppContextSetup(context)
@@ -153,6 +151,6 @@ class CompanyLogoControllerImplTest {
         .then()
         .status(HttpStatus.NOT_FOUND);
 
-    verify(companyService).deleteCompanyLogo(any());
+    verify(companyLogoService).deleteCompanyLogo(any());
   }
 }

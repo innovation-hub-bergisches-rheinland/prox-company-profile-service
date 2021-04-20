@@ -15,19 +15,17 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class CompanyLogoControllerImpl implements CompanyLogoController {
 
-  private final CompanyService companyService;
   private final CompanyLogoService companyLogoService;
 
-  public CompanyLogoControllerImpl(CompanyService companyService, CompanyLogoService companyLogoService) {
-    this.companyService = companyService;
+  public CompanyLogoControllerImpl(
+      CompanyLogoService companyLogoService) {
     this.companyLogoService = companyLogoService;
   }
 
   @Override
   public ResponseEntity<byte[]> getCompanyLogo(UUID id) {
-    var companyLogo = companyService.getCompanyLogo(id);
-    var optIs = companyLogo.flatMap(
-        this.companyLogoService::getCompanyLogoAsStream);
+    var optCompanyLogo = companyLogoService.getCompanyLogo(id);
+    var optIs = optCompanyLogo.flatMap(companyLogoService::getCompanyLogoAsStream);
     if(optIs.isEmpty()) {
       //CompanyLogo Entity not found
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -36,7 +34,7 @@ public class CompanyLogoControllerImpl implements CompanyLogoController {
       try (InputStream is = optIs.get()) {
         var bytes = is.readAllBytes();
         return ResponseEntity.status(HttpStatus.OK)
-            .header("Content-Type", companyLogo.get().getMimeType()).body(bytes);
+            .header("Content-Type", optCompanyLogo.get().getMimeType()).body(bytes);
       } catch (IOException ioException) {
         ioException.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -47,7 +45,7 @@ public class CompanyLogoControllerImpl implements CompanyLogoController {
   public ResponseEntity<Void> postCompanyLogo(UUID id, MultipartFile image,
       HttpServletRequest request) {
     try {
-      this.companyService.setCompanyLogo(id, image.getInputStream()).orElseThrow(() -> new ResponseStatusException(
+      this.companyLogoService.setCompanyLogo(id, image.getInputStream()).orElseThrow(() -> new ResponseStatusException(
           HttpStatus.INTERNAL_SERVER_ERROR, "Image could not be saved"));
       return ResponseEntity.ok().build();
     } catch (IOException e) {
@@ -58,7 +56,7 @@ public class CompanyLogoControllerImpl implements CompanyLogoController {
 
   @Override
   public ResponseEntity<Void> deleteCompanyLogo(UUID id, HttpServletRequest request) {
-    var optLogo = this.companyService.deleteCompanyLogo(id);
+    var optLogo = this.companyLogoService.deleteCompanyLogo(id);
     if(optLogo.isPresent()) {
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
