@@ -5,8 +5,11 @@ import de.innovationhub.prox.companyprofileservice.application.exception.core.Cu
 import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
 import de.innovationhub.prox.companyprofileservice.application.service.company.quarter.QuarterService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
+import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyRepository;
 import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -73,7 +76,7 @@ public class CompanyServiceImpl implements CompanyService {
   public void deleteById(UUID id) {
     this.getById(id).ifPresentOrElse(
         c -> {
-          this.companyLogoService.deleteCompanyLogo(c.getCompanyLogo());
+          this.deleteCompanyLogo(c.getId());
           this.companyRepository.deleteById(id);
         }, () -> {
           throw new CompanyNotFoundException();
@@ -143,5 +146,34 @@ public class CompanyServiceImpl implements CompanyService {
                               "Quarter with id " + quarterId + " not found"));
             })
         .orElseThrow(CompanyNotFoundException::new);
+  }
+
+  @Override
+  public Optional<CompanyLogo> getCompanyLogo(UUID companyId) {
+    Company company = this.getById(companyId).orElseThrow(RuntimeException::new);
+    return Optional.ofNullable(company.getCompanyLogo());
+  }
+
+  @Override
+  public Optional<CompanyLogo> setCompanyLogo(UUID companyId, InputStream inputStream)
+      throws IOException {
+    Company company = this.getById(companyId).orElseThrow(RuntimeException::new);
+    var optCompanyLogo = companyLogoService.setCompanyLogo(company.getCompanyLogo(), inputStream);
+    if(optCompanyLogo.isPresent()) {
+      var companyLogo = optCompanyLogo.get();
+      company.setCompanyLogo(companyLogo);
+      this.save(company);
+      return Optional.of(companyLogo);
+    }
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<CompanyLogo> deleteCompanyLogo(UUID companyId) {
+    Company company = this.getById(companyId).orElseThrow(RuntimeException::new);
+    CompanyLogo companyLogo = company.getCompanyLogo();
+    company.setCompanyLogo(null);
+    this.save(company);
+    return companyLogoService.deleteCompanyLogo(companyLogo);
   }
 }

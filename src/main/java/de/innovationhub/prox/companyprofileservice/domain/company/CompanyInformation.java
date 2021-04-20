@@ -6,9 +6,11 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @ToString
 @EqualsAndHashCode
 @Embeddable
@@ -28,13 +30,21 @@ public class CompanyInformation {
 
   public CompanyInformation(
       String name, String foundingDate, String numberOfEmployees, String homepage, String vita) {
+    this.setName(name);
+    this.setFoundingDate(foundingDate);
+    this.setNumberOfEmployees(numberOfEmployees);
+    this.setHomepage(homepage);
+    this.setVita(vita);
+  }
+
+  public CompanyInformation(String name) {
+    this.setName(name);
+  }
+
+  public void setName(String name) {
     if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Name of company cannot be null or empty");
     }
     this.name = name;
-    this.foundingDate = foundingDate;
-    this.numberOfEmployees = numberOfEmployees;
-    this.homepage = homepage;
-    this.vita = vita;
   }
 }

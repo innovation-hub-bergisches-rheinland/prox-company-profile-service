@@ -44,33 +44,16 @@ class CompanyLogoServiceImplTest {
 
   @Test
   void getCompanyLogo() throws IOException {
-    CompanyLogo companyLogo = new CompanyLogo(UUID.randomUUID(), 4567L, "image/png");
-    when(companyLogoStore.getContent(any())).thenReturn(resourceImage);
 
-    this.companyLogoService.getCompanyLogo(companyLogo);
-
-    verify(companyLogoStore).getContent(eq(companyLogo));
   }
 
   @Test
   void setCompanyLogo() throws IOException {
-    CompanyLogo companyLogo = new CompanyLogo(UUID.randomUUID(), 4567L, "");
-    when(companyLogoStore.setContent(any(), any(InputStream.class))).thenAnswer(invocation -> invocation.getArgument(0));
-    when(companyLogoRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-    this.companyLogoService.setCompanyLogo(companyLogo, resourceImage);
-
-    companyLogo.setMimeType("image/png");
-    verify(companyLogoStore).setContent(eq(companyLogo), any(InputStream.class));
   }
 
   @Test
   void deleteCompanyLogo() {
-    CompanyLogo companyLogo = new CompanyLogo(UUID.randomUUID(), 4567L, "image/png");
-    when(companyLogoStore.unsetContent(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-    this.companyLogoService.deleteCompanyLogo(companyLogo);
-
-    verify(companyLogoStore).unsetContent(eq(companyLogo));
   }
 }
