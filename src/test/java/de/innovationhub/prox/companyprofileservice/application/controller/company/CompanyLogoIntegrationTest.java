@@ -76,7 +76,7 @@ class CompanyLogoIntegrationTest {
         .webAppContextSetup(context)
         .header("Accept", "image/*")
         .when()
-        .get("/companies/{id}/image", company.getId().toString())
+        .get("/companies/{id}/logo", company.getId().toString())
         .then()
         .status(HttpStatus.OK)
         .header("Content-Type", companyLogo.getMimeType())
@@ -97,7 +97,7 @@ class CompanyLogoIntegrationTest {
         .header("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE)
         .multiPart("image", file)
         .when()
-        .post("/companies/{id}/image", company.getId().toString())
+        .post("/companies/{id}/logo", company.getId().toString())
         .then()
         .status(HttpStatus.OK);
 
@@ -119,7 +119,7 @@ class CompanyLogoIntegrationTest {
     given()
         .webAppContextSetup(context)
         .when()
-        .delete("/companies/{id}/image", company.getId().toString())
+        .delete("/companies/{id}/logo", company.getId().toString())
         .then()
         .status(HttpStatus.NO_CONTENT);
 

@@ -61,7 +61,7 @@ class CompanyLogoControllerImplTest {
         .webAppContextSetup(context)
         .header("Accept", "image/*")
         .when()
-        .get("/companies/{id}/image", UUID.randomUUID())
+        .get("/companies/{id}/logo", UUID.randomUUID())
         .then()
         .status(HttpStatus.OK);
 
@@ -78,7 +78,7 @@ class CompanyLogoControllerImplTest {
         .webAppContextSetup(context)
         .header("Accept", "image/*")
         .when()
-        .get("/companies/{id}/image", UUID.randomUUID())
+        .get("/companies/{id}/logo", UUID.randomUUID())
         .then()
         .status(HttpStatus.NOT_FOUND);
 
@@ -96,7 +96,7 @@ class CompanyLogoControllerImplTest {
         .header("Accept", "image/*")
         .multiPart("image", file)
         .when()
-        .post("/companies/{id}/image", UUID.randomUUID())
+        .post("/companies/{id}/logo", UUID.randomUUID())
         .then()
         .status(HttpStatus.OK);
 
@@ -113,7 +113,7 @@ class CompanyLogoControllerImplTest {
         .header("Accept", "image/*")
         .multiPart("image", file)
         .when()
-        .post("/companies/{id}/image", UUID.randomUUID())
+        .post("/companies/{id}/logo", UUID.randomUUID())
         .then()
         .status(HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -130,7 +130,7 @@ class CompanyLogoControllerImplTest {
         .webAppContextSetup(context)
         .header("Accept", "image/*")
         .when()
-        .delete("/companies/{id}/image", UUID.randomUUID())
+        .delete("/companies/{id}/logo", UUID.randomUUID())
         .then()
         .status(HttpStatus.NO_CONTENT);
 
@@ -147,7 +147,7 @@ class CompanyLogoControllerImplTest {
         .webAppContextSetup(context)
         .header("Accept", "image/*")
         .when()
-        .delete("/companies/{id}/image", UUID.randomUUID())
+        .delete("/companies/{id}/logo", UUID.randomUUID())
         .then()
         .status(HttpStatus.NOT_FOUND);
 

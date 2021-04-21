@@ -20,11 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequestMapping("companies")
 public interface CompanyLogoController {
-  @GetMapping(value = "/{id}/image", produces = "image/*")
+  @GetMapping(value = "/{id}/logo", produces = "image/*")
   ResponseEntity<byte[]> getCompanyLogo(@PathVariable UUID id);
 
   @PostMapping(
-      value = "/{id}/image",
+      value = "/{id}/logo",
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   ResponseEntity<Void> postCompanyLogo(@PathVariable UUID id,
       @RequestPart(value = "image", required = true)
@@ -32,6 +32,6 @@ public interface CompanyLogoController {
       HttpServletRequest request);
 
 
-  @DeleteMapping(value = "/{id}/image")
+  @DeleteMapping(value = "/{id}/logo")
   ResponseEntity<Void> deleteCompanyLogo(@PathVariable UUID id, HttpServletRequest request);
 }
