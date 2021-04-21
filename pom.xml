@@ -10,7 +10,7 @@
   </parent>
   <groupId>de.innovation-hub.prox</groupId>
   <artifactId>prox-company-profile-service</artifactId>
-  <version>0.1.0</version>
+  <version>${revision}${changelist}</version>
   <name>prox-company-profile-service</name>
   <description>PROX Service for company profile</description>
 
