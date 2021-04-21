@@ -5,6 +5,10 @@ services:
     image: ${REPOSITORY}/${IMAGE}:${TAG}
     depends_on:
       - company-profile-db
+    environment:
+      - FS_ROOT=/home/cnb/data
+    volumes:
+      - company-profile-service-data:/home/cnb:rw
     networks:
       - prox
       - company-profile-db
@@ -22,6 +26,7 @@ services:
       - company-profile-db
 
 volumes:
+  company-profile-service-data:
   company-profile-db-data:
 
 networks:
