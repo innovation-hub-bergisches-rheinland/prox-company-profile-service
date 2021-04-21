@@ -5,7 +5,6 @@ import de.innovationhub.prox.companyprofileservice.application.exception.company
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
-import de.innovationhub.prox.companyprofileservice.application.hateoas.QuarterRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
@@ -31,19 +30,16 @@ public class CompanyControllerImpl implements CompanyController {
   private final CompanyService companyService;
   private final CompanyRepresentationModelAssembler companyRepresentationModelAssembler;
   private final LanguageRepresentationModelAssembler languageRepresentationModelAssembler;
-  private final QuarterRepresentationModelAssembler quarterRepresentationModelAssembler;
   private final Logger logger = LoggerFactory.getLogger(CompanyControllerImpl.class);
 
   @Autowired
   public CompanyControllerImpl(
       CompanyService companyService,
       CompanyRepresentationModelAssembler companyRepresentationModelAssembler,
-      LanguageRepresentationModelAssembler languageRepresentationModelAssembler,
-      QuarterRepresentationModelAssembler quarterRepresentationModelAssembler) {
+      LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
     this.companyService = companyService;
     this.companyRepresentationModelAssembler = companyRepresentationModelAssembler;
     this.languageRepresentationModelAssembler = languageRepresentationModelAssembler;
-    this.quarterRepresentationModelAssembler = quarterRepresentationModelAssembler;
   }
 
   @ExceptionHandler({CustomEntityNotFoundException.class})
@@ -88,42 +84,6 @@ public class CompanyControllerImpl implements CompanyController {
     var company = companyService.setCompanyLanguages(id, uuids);
     return ResponseEntity.ok(
         languageRepresentationModelAssembler.toCollectionModel(company.getLanguages()));
-  }
-
-  @Override
-  public ResponseEntity<EntityModel<Quarter>> getCompanyHeadquarter(UUID id) {
-    return companyService
-        .getCompanyHeadquarter(id)
-        .map(quarterRepresentationModelAssembler::toModel)
-        .map(ResponseEntity::ok)
-        .orElseThrow(CompanyNotFoundException::new);
-  }
-
-  @Override
-  public ResponseEntity<EntityModel<Quarter>> putCompanyHeadquarter(
-      UUID id, Map<String, UUID> ids) {
-    if (!ids.containsKey("id") || ids.get("id") == null) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
-    return ResponseEntity.ok(
-        quarterRepresentationModelAssembler.toModel(
-            companyService.setCompanyHeadquarter(id, ids.get("id"))));
-  }
-
-  @Override
-  public ResponseEntity<CollectionModel<EntityModel<Quarter>>> getCompanyQuarters(UUID id) {
-    return ResponseEntity.ok(
-        quarterRepresentationModelAssembler.toCollectionModel(
-            companyService.getCompanyQuarters(id)));
-  }
-
-  @Override
-  public ResponseEntity<CollectionModel<EntityModel<Quarter>>> putCompanyQuarters(
-      UUID id, String[] ids) {
-    return ResponseEntity.ok(
-        quarterRepresentationModelAssembler.toCollectionModel(
-            companyService.setCompanyQuarters(
-                id, Arrays.stream(ids).map(UUID::fromString).collect(Collectors.toSet()))));
   }
 
   @Override

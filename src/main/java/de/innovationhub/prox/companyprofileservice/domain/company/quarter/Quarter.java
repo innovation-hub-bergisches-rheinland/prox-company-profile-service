@@ -1,6 +1,7 @@
 package de.innovationhub.prox.companyprofileservice.domain.company.quarter;
 
 import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -8,11 +9,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
+@EqualsAndHashCode
+@Embeddable
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Quarter extends AbstractEntity {
+public class Quarter {
   @NotBlank private String location;
 
   public Quarter(String location) {

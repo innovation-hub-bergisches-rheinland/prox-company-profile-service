@@ -29,9 +29,9 @@ public class Company extends AbstractEntity {
 
   @Embedded @NotNull private CompanyInformation information;
 
-  @ManyToOne @JsonIgnore private Quarter headquarter;
+  @Embedded private Quarter headquarter;
 
-  @ManyToMany @JsonIgnore private Set<Quarter> quarters;
+  @ElementCollection private Set<Quarter> quarters;
 
   @ManyToMany @JsonIgnore private Set<Language> languages;
 

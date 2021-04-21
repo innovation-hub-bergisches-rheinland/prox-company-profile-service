@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -17,16 +16,12 @@ import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.exception.company.language.LanguageNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
-import de.innovationhub.prox.companyprofileservice.application.hateoas.QuarterRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Type;
-import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +43,6 @@ import org.springframework.web.context.WebApplicationContext;
 @Import({
   CompanyRepresentationModelAssembler.class,
   LanguageRepresentationModelAssembler.class,
-  QuarterRepresentationModelAssembler.class,
   WebConfig.class
 })
 @RunWith(SpringRunner.class)
@@ -259,84 +253,5 @@ class CompanyControllerTest {
             response -> equalTo("http://localhost/companies/" + response.path("id")));
 
     verify(companyService).update(eq(sampleCompany.getId()), any(Company.class));
-  }
-
-  @DisplayName("GET /companies/{id}/quarters should return OK")
-  @Test
-  void testGetCompanyQuarters() {
-    when(companyService.getCompanyQuarters(any(UUID.class))).thenReturn(Collections.emptyList());
-
-    given()
-        .webAppContextSetup(context)
-        .header("Accept", MediaTypes.HAL_JSON_VALUE)
-        .when()
-        .get("/companies/{id}/quarters", sampleCompany.getId())
-        .then()
-        .status(HttpStatus.OK)
-        .header("Content-Type", MediaTypes.HAL_JSON_VALUE);
-
-    verify(companyService).getCompanyQuarters(eq(sampleCompany.getId()));
-  }
-
-  @DisplayName("PUT /companies/{id}/quarters should return OK")
-  @Test
-  void testPutCompanyQuarters() {
-    when(companyService.setCompanyQuarters(any(), anyIterable()))
-        .thenReturn(Collections.emptyList());
-
-    UUID[] uuids = new UUID[] {UUID.randomUUID(), UUID.randomUUID()};
-
-    given()
-        .webAppContextSetup(context)
-        .header("Accept", MediaTypes.HAL_JSON_VALUE)
-        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .body(uuids)
-        .when()
-        .put("/companies/{id}/quarters", sampleCompany.getId())
-        .then()
-        .status(HttpStatus.OK)
-        .header("Content-Type", MediaTypes.HAL_JSON_VALUE);
-
-    verify(companyService).setCompanyQuarters(eq(sampleCompany.getId()), anyIterable());
-  }
-
-  @DisplayName("GET /companies/{id}/headquarter should return OK")
-  @Test
-  void testGetCompanyHeadquarter() {
-    when(companyService.getCompanyHeadquarter(any(UUID.class)))
-        .thenReturn(Optional.of(new Quarter("test")));
-
-    given()
-        .webAppContextSetup(context)
-        .header("Accept", MediaTypes.HAL_JSON_VALUE)
-        .when()
-        .get("/companies/{id}/headquarter", sampleCompany.getId())
-        .then()
-        .status(HttpStatus.OK)
-        .header("Content-Type", MediaTypes.HAL_JSON_VALUE);
-
-    verify(companyService).getCompanyHeadquarter(eq(sampleCompany.getId()));
-  }
-
-  @DisplayName("PUT /companies/{id}/quarters should return OK")
-  @Test
-  void testPutCompanyHeadquarter() {
-    when(companyService.setCompanyHeadquarter(any(), any())).thenReturn(new Quarter("test"));
-
-    Map<String, UUID> map = new HashMap<>();
-    map.put("id", UUID.randomUUID());
-
-    given()
-        .webAppContextSetup(context)
-        .header("Accept", MediaTypes.HAL_JSON_VALUE)
-        .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .body(map)
-        .when()
-        .put("/companies/{id}/headquarter", sampleCompany.getId())
-        .then()
-        .status(HttpStatus.OK)
-        .header("Content-Type", MediaTypes.HAL_JSON_VALUE);
-
-    verify(companyService).setCompanyHeadquarter(eq(sampleCompany.getId()), eq(map.get("id")));
   }
 }

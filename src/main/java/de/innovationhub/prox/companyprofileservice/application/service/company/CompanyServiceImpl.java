@@ -1,15 +1,9 @@
 package de.innovationhub.prox.companyprofileservice.application.service.company;
 
 import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
-import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
-import de.innovationhub.prox.companyprofileservice.application.service.company.quarter.QuarterService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyRepository;
-import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,19 +19,16 @@ public class CompanyServiceImpl implements CompanyService {
   private final CompanyRepository companyRepository;
   private final CompanyLogoService companyLogoService;
   private final LanguageService languageService;
-  private final QuarterService quarterService;
   private final ModelMapper modelMapper;
 
   @Autowired
   public CompanyServiceImpl(
       CompanyRepository companyRepository,
       @Lazy CompanyLogoService companyLogoService,
-      LanguageService languageService,
-      QuarterService quarterService) {
+      LanguageService languageService) {
     this.companyRepository = companyRepository;
     this.companyLogoService = companyLogoService;
     this.languageService = languageService;
-    this.quarterService = quarterService;
     this.modelMapper = new ModelMapper();
   }
 
@@ -96,55 +87,6 @@ public class CompanyServiceImpl implements CompanyService {
                       .collect(Collectors.toSet());
               company.setLanguages(languages);
               return this.save(company);
-            })
-        .orElseThrow(CompanyNotFoundException::new);
-  }
-
-  @Override
-  public Iterable<Quarter> getCompanyQuarters(UUID id) {
-    return this.getById(id).map(Company::getQuarters).orElseThrow(CompanyNotFoundException::new);
-  }
-
-  @Override
-  public Iterable<Quarter> setCompanyQuarters(UUID id, Iterable<UUID> quarterIds) {
-    return this.getById(id)
-        .map(
-            company -> {
-              var quarters =
-                  StreamSupport.stream(quarterIds.spliterator(), false)
-                      .map(quarterService::getById)
-                      .filter(Optional::isPresent)
-                      .map(Optional::get)
-                      .collect(Collectors.toSet());
-              company.setQuarters(quarters);
-              this.save(company);
-              return quarters;
-            })
-        .orElseThrow(CompanyNotFoundException::new);
-  }
-
-  @Override
-  public Optional<Quarter> getCompanyHeadquarter(UUID id) {
-    return this.getById(id).map(Company::getHeadquarter);
-  }
-
-  @Override
-  public Quarter setCompanyHeadquarter(UUID id, UUID quarterId) {
-    return this.getById(id)
-        .map(
-            company -> {
-              return this.quarterService
-                  .getById(quarterId)
-                  .map(
-                      quarter -> {
-                        company.setHeadquarter(quarter);
-                        this.save(company);
-                        return quarter;
-                      })
-                  .orElseThrow(
-                      () ->
-                          new CustomEntityNotFoundException(
-                              "Quarter with id " + quarterId + " not found"));
             })
         .orElseThrow(CompanyNotFoundException::new);
   }
