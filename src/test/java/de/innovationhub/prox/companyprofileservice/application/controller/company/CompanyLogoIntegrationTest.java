@@ -70,6 +70,7 @@ class CompanyLogoIntegrationTest {
     companyLogo = this.companyLogoStore.setContent(companyLogo, new FileInputStream(file));
     companyLogo = this.companyLogoRepository.save(companyLogo);
     company.setCompanyLogo(companyLogo);
+    company.setCreatorId(UUID.randomUUID());
     companyRepository.save(company);
 
     byte[] bytes = given()
@@ -90,6 +91,7 @@ class CompanyLogoIntegrationTest {
   void shouldSaveImage() throws IOException {
     var company = new Company(new CompanyInformation("Company A"));
     company.setCompanyLogo(null);
+    company.setCreatorId(UUID.randomUUID());
     companyRepository.save(company);
 
     given()
@@ -114,6 +116,7 @@ class CompanyLogoIntegrationTest {
     companyLogo = companyLogoStore.setContent(companyLogo, new FileInputStream(file));
     companyLogo = companyLogoRepository.save(companyLogo);
     company.setCompanyLogo(companyLogo);
+    company.setCreatorId(UUID.randomUUID());
     companyRepository.save(company);
 
     given()

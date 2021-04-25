@@ -5,6 +5,8 @@ import de.innovationhub.prox.companyprofileservice.domain.company.language.Langu
 import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
 import java.util.Set;
+import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -18,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedBy;
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
@@ -26,6 +29,10 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Company extends AbstractEntity {
+  @CreatedBy
+  @JsonIgnore
+  @Column(unique = true, nullable = false)
+  private UUID creatorId;
 
   @Embedded @NotNull private CompanyInformation information;
 
