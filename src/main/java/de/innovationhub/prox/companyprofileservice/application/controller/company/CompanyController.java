@@ -95,7 +95,7 @@ public interface CompanyController {
       consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<CollectionModel<EntityModel<Language>>> putCompanyLanguages(
       @PathVariable("id") @Parameter(description = "UUID of company") UUID id,
-      @RequestBody String[] ids);
+      @RequestBody @Parameter(description = "Language UUIDs") UUID[] ids);
 
 
   @ApiResponse(responseCode = "201", description = "Created")

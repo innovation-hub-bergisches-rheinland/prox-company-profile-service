@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
 import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
@@ -8,9 +9,7 @@ import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageR
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
-import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -48,6 +47,12 @@ public class CompanyControllerImpl implements CompanyController {
         .body(new ApiError(HttpStatus.NOT_FOUND.value(), e.getType(), e.getMessage()));
   }
 
+  @ExceptionHandler({InvalidFormatException.class})
+  public ResponseEntity<ApiError> invalidFormatExceptionHandler(InvalidFormatException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "Invalid Format", e.getMessage()));
+  }
+
   @ExceptionHandler({IllegalArgumentException.class})
   public ResponseEntity<ApiError> entityNotFoundExceptionHandler(IllegalArgumentException e) {
     logger.error(e.getMessage(), e);
@@ -77,9 +82,9 @@ public class CompanyControllerImpl implements CompanyController {
 
   @Override
   public ResponseEntity<CollectionModel<EntityModel<Language>>> putCompanyLanguages(
-      UUID id, String[] languageIds) {
+      UUID id, UUID[] languageIds) {
 
-    var uuids = Arrays.stream(languageIds).map(UUID::fromString).collect(Collectors.toSet());
+    var uuids = Arrays.stream(languageIds).collect(Collectors.toSet());
 
     var company = companyService.setCompanyLanguages(id, uuids);
     return ResponseEntity.ok(
