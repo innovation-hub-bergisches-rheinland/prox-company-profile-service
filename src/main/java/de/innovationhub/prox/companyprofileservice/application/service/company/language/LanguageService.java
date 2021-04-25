@@ -1,6 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.service.company.language;
 
-import de.innovationhub.prox.companyprofileservice.application.exception.company.language.LanguageNotFoundException;
+import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.service.core.CrudService;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Type;
@@ -14,7 +14,7 @@ public interface LanguageService extends CrudService<Language, UUID> {
   default Iterable<Language> getLanguagesWithIds(Iterable<UUID> uuids) {
     var language = new HashSet<Language>();
     for (UUID uuid : uuids) {
-      this.getById(uuid).ifPresentOrElse(language::add, LanguageNotFoundException::new);
+      this.getById(uuid).map(language::add).orElseThrow(() -> new CustomEntityNotFoundException("Language with id " + uuid.toString() + " not found"));
     }
     return Collections.unmodifiableSet(language);
   }

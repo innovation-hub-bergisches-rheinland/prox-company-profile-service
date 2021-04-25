@@ -13,7 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
-import de.innovationhub.prox.companyprofileservice.application.exception.company.language.LanguageNotFoundException;
+import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
@@ -145,7 +145,7 @@ class CompanyControllerTest {
   @Test
   void testSetCompanyLanguagesInvalid() {
     when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anySet()))
-        .thenThrow(new LanguageNotFoundException());
+        .thenThrow(new CustomEntityNotFoundException("Langauge not found"));
 
     String[] uuids = new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
 

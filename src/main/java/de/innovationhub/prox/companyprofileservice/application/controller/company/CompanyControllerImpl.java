@@ -1,8 +1,5 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
-import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
@@ -20,7 +17,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,25 +37,6 @@ public class CompanyControllerImpl implements CompanyController {
     this.languageRepresentationModelAssembler = languageRepresentationModelAssembler;
   }
 
-  @ExceptionHandler({CustomEntityNotFoundException.class})
-  public ResponseEntity<ApiError> entityNotFoundExceptionHandler(CustomEntityNotFoundException e) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        .body(new ApiError(HttpStatus.NOT_FOUND.value(), e.getType(), e.getMessage()));
-  }
-
-  @ExceptionHandler({InvalidFormatException.class})
-  public ResponseEntity<ApiError> invalidFormatExceptionHandler(InvalidFormatException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "Invalid Format", e.getMessage()));
-  }
-
-  @ExceptionHandler({IllegalArgumentException.class})
-  public ResponseEntity<ApiError> entityNotFoundExceptionHandler(IllegalArgumentException e) {
-    logger.error(e.getMessage(), e);
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "Illegal Argument", e.getMessage()));
-  }
-
   @Override
   public ResponseEntity<CollectionModel<EntityModel<Company>>> getAllCompanies() {
     var collectionModel =
@@ -69,7 +46,7 @@ public class CompanyControllerImpl implements CompanyController {
 
   @Override
   public ResponseEntity<EntityModel<Company>> getCompany(UUID id) {
-    var company = companyService.getById(id).orElseThrow(CompanyNotFoundException::new);
+    var company = companyService.getById(id).orElseThrow(() -> new CustomEntityNotFoundException("Company with id " + id.toString() + " not found"));
     return ResponseEntity.ok(companyRepresentationModelAssembler.toModel(company));
   }
 
