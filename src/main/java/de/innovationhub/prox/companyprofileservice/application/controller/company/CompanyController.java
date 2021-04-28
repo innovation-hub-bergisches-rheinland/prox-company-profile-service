@@ -34,6 +34,18 @@ public interface CompanyController {
   ResponseEntity<CollectionModel<EntityModel<Company>>> getAllCompanies();
 
   @ApiResponse(
+      responseCode = "404",
+      description = "No company with the given ID found",
+      content =
+      @Content(
+          mediaType = MediaType.APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "200", description = "OK")
+  @Operation(summary = "Get owned company of authenticated user")
+  @GetMapping(value = "/me", produces = MediaTypes.HAL_JSON_VALUE)
+  ResponseEntity<EntityModel<Company>> getMyCompany();
+
+  @ApiResponse(
       responseCode = "400",
       description = "Invalid UUID",
       content =

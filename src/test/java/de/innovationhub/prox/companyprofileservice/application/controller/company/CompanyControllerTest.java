@@ -12,6 +12,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.innovationhub.prox.companyprofileservice.application.config.KeycloakConfig;
+import de.innovationhub.prox.companyprofileservice.application.config.SecurityConfig;
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
@@ -43,7 +45,8 @@ import org.springframework.web.context.WebApplicationContext;
 @Import({
   CompanyRepresentationModelAssembler.class,
   LanguageRepresentationModelAssembler.class,
-  WebConfig.class
+  WebConfig.class,
+    KeycloakConfig.class
 })
 @RunWith(SpringRunner.class)
 class CompanyControllerTest {

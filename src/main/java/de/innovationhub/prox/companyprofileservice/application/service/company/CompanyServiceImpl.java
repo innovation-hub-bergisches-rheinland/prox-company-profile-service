@@ -11,6 +11,7 @@ import java.util.stream.StreamSupport;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -89,5 +90,10 @@ public class CompanyServiceImpl implements CompanyService {
               return this.save(company);
             })
         .orElseThrow(() -> new CustomEntityNotFoundException("Company with id " + id.toString() + " not found"));
+  }
+
+  @Override
+  public Optional<Company> findCompanyByCreatorId(UUID id) {
+    return this.companyRepository.findCompanyByCreatorId(id);
   }
 }

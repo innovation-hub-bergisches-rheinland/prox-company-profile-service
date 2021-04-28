@@ -3,10 +3,12 @@ package de.innovationhub.prox.companyprofileservice.application.controller.compa
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
+import de.innovationhub.prox.companyprofileservice.application.security.KeycloakAuthenticationService;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -25,16 +27,19 @@ public class CompanyControllerImpl implements CompanyController {
   private final CompanyService companyService;
   private final CompanyRepresentationModelAssembler companyRepresentationModelAssembler;
   private final LanguageRepresentationModelAssembler languageRepresentationModelAssembler;
+  private final KeycloakAuthenticationService keycloakAuthenticationService;
   private final Logger logger = LoggerFactory.getLogger(CompanyControllerImpl.class);
 
   @Autowired
   public CompanyControllerImpl(
       CompanyService companyService,
       CompanyRepresentationModelAssembler companyRepresentationModelAssembler,
-      LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
+      LanguageRepresentationModelAssembler languageRepresentationModelAssembler,
+      KeycloakAuthenticationService keycloakAuthenticationService) {
     this.companyService = companyService;
     this.companyRepresentationModelAssembler = companyRepresentationModelAssembler;
     this.languageRepresentationModelAssembler = languageRepresentationModelAssembler;
+    this.keycloakAuthenticationService = keycloakAuthenticationService;
   }
 
   @Override
@@ -42,6 +47,19 @@ public class CompanyControllerImpl implements CompanyController {
     var collectionModel =
         companyRepresentationModelAssembler.toCollectionModel(companyService.getAll());
     return ResponseEntity.ok(collectionModel);
+  }
+
+  @Override
+  public ResponseEntity<EntityModel<Company>> getMyCompany() {
+    Optional<UUID> subjectId = this.keycloakAuthenticationService.getSubjectId();
+    if(subjectId.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+    Optional<Company> company = companyService.findCompanyByCreatorId(subjectId.get());
+    if(company.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+    return ResponseEntity.ok(companyRepresentationModelAssembler.toModel(company.get()));
   }
 
   @Override
@@ -76,12 +94,12 @@ public class CompanyControllerImpl implements CompanyController {
   }
 
   @Override
-  public ResponseEntity<EntityModel<Company>> updateCompany(UUID id, @Valid Company professor) {
-    if (!professor.getId().equals(id)) {
+  public ResponseEntity<EntityModel<Company>> updateCompany(UUID id, @Valid Company company) {
+    if (!company.getId().equals(id)) {
       throw new RuntimeException();
     }
 
-    var savedCompany = this.companyService.update(id, professor);
+    var savedCompany = this.companyService.update(id, company);
 
     return ResponseEntity.ok(this.companyRepresentationModelAssembler.toModel(savedCompany));
   }

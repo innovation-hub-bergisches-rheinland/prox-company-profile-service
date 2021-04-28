@@ -11,6 +11,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.innovationhub.prox.companyprofileservice.application.config.KeycloakConfig;
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
@@ -31,7 +32,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest(controllers = LanguageController.class)
-@Import({LanguageRepresentationModelAssembler.class, WebConfig.class})
+@Import({LanguageRepresentationModelAssembler.class, WebConfig.class, KeycloakConfig.class})
 @RunWith(SpringRunner.class)
 class LanguageControllerTest {
 

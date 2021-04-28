@@ -4,6 +4,7 @@ import de.innovationhub.prox.companyprofileservice.application.service.core.Crud
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CompanyService extends CrudService<Company, UUID> {
@@ -18,4 +19,5 @@ public interface CompanyService extends CrudService<Company, UUID> {
 
   Company setCompanyLanguages(UUID id, Iterable<UUID> languageIds);
 
+  Optional<Company> findCompanyByCreatorId(UUID id);
 }

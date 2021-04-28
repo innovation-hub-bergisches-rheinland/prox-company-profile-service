@@ -37,6 +37,14 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers(HttpMethod.GET, "/**")
         .permitAll()
+        .antMatchers(HttpMethod.POST, "/companies")
+        .access("hasRole('company-manager') and @securityService.authenticatedUserIsNotOwnerOfAnyCompany()")
+        .antMatchers(HttpMethod.POST, "/companies/{id}/logo")
+        .access("hasRole('company-manager') and @securityService.authenticatedUserIsOwnerOfCompany(#id)")
+        .antMatchers(HttpMethod.PUT, "/companies/{id}", "/companies/{id}/languages")
+        .access("hasRole('company-manager') and @securityService.authenticatedUserIsOwnerOfCompany(#id)")
+        .antMatchers(HttpMethod.DELETE, "/companies/{id}", "companies/{id}/logo")
+        .access("hasRole('company-manager') and @securityService.authenticatedUserIsOwnerOfCompany(#id)")
         .anyRequest()
         .permitAll();
   }
