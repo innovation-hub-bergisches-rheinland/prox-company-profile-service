@@ -40,7 +40,8 @@ public class ExceptionHandlerAdvice {
   public ResponseEntity<ApiError> exceptionHandler(Exception e) {
     logger.error("Exception", e);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", e.getMessage()));
+        .body(
+            new ApiError(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", e.getMessage()));
   }
-
 }

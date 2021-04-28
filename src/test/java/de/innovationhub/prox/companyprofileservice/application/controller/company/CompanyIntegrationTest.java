@@ -3,7 +3,6 @@ package de.innovationhub.prox.companyprofileservice.application.controller.compa
 import static io.restassured.RestAssured.withArgs;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -17,7 +16,6 @@ import de.innovationhub.prox.companyprofileservice.domain.company.language.Langu
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Type;
 import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -96,7 +94,7 @@ class CompanyIntegrationTest {
     company.setBranches(branches);
     companyRepository.save(company);
 
-    //Update Company
+    // Update Company
     company.setBranches(Set.of());
     company.setInformation(new CompanyInformation("Company Inc 2", "Today", null, null, null));
 
@@ -162,8 +160,7 @@ class CompanyIntegrationTest {
         .body("germanName", withArgs(language1.getId().toString()), is(language1.getGermanName()))
         .body("type", withArgs(language1.getId().toString()), is(language1.getType().toString()));
 
-    assertThat(companyRepository.findById(company.getId()).get().getLanguages()).containsExactlyInAnyOrder(language1);
+    assertThat(companyRepository.findById(company.getId()).get().getLanguages())
+        .containsExactlyInAnyOrder(language1);
   }
-
-
 }

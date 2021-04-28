@@ -40,5 +40,9 @@ public class LanguageControllerImpl implements LanguageController {
         .getById(id)
         .map(languageRepresentationModelAssembler::toModel)
         .map(ResponseEntity::ok)
-        .orElseThrow(() -> new CustomEntityNotFoundException("Language with id " + id.toString() + " not found"));  }
+        .orElseThrow(
+            () ->
+                new CustomEntityNotFoundException(
+                    "Language with id " + id.toString() + " not found"));
+  }
 }

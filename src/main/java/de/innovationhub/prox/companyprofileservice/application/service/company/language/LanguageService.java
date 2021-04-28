@@ -14,7 +14,12 @@ public interface LanguageService extends CrudService<Language, UUID> {
   default Iterable<Language> getLanguagesWithIds(Iterable<UUID> uuids) {
     var language = new HashSet<Language>();
     for (UUID uuid : uuids) {
-      this.getById(uuid).map(language::add).orElseThrow(() -> new CustomEntityNotFoundException("Language with id " + uuid.toString() + " not found"));
+      this.getById(uuid)
+          .map(language::add)
+          .orElseThrow(
+              () ->
+                  new CustomEntityNotFoundException(
+                      "Language with id " + uuid.toString() + " not found"));
     }
     return Collections.unmodifiableSet(language);
   }

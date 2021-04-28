@@ -35,11 +35,13 @@ public interface CompanyController {
       responseCode = "404",
       description = "No company with the given ID found",
       content =
-      @Content(
-          mediaType = MediaType.APPLICATION_JSON_VALUE,
-          schema = @Schema(implementation = ApiError.class)))
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "200", description = "OK")
-  @Operation(summary = "Get owned company of authenticated user", security = @SecurityRequirement(name = "Bearer"))
+  @Operation(
+      summary = "Get owned company of authenticated user",
+      security = @SecurityRequirement(name = "Bearer"))
   @GetMapping(value = "/me", produces = MediaTypes.HAL_JSON_VALUE)
   ResponseEntity<EntityModel<Company>> getMyCompany();
 
@@ -106,7 +108,6 @@ public interface CompanyController {
   ResponseEntity<CollectionModel<EntityModel<Language>>> putCompanyLanguages(
       @PathVariable("id") @Parameter(description = "UUID of company") UUID id,
       @RequestBody @Parameter(description = "Language UUIDs") UUID[] ids);
-
 
   @ApiResponse(responseCode = "201", description = "Created")
   @ApiResponse(

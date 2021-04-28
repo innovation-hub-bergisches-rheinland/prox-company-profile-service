@@ -1,8 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company.quarter;
 
-import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Data;

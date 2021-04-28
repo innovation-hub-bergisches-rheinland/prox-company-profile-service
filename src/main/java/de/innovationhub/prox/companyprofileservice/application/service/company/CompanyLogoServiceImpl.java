@@ -16,8 +16,6 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +28,10 @@ public class CompanyLogoServiceImpl implements CompanyLogoService {
   private final TikaConfig tikaConfig;
 
   @Autowired
-  public CompanyLogoServiceImpl(CompanyLogoRepository companyLogoRepository, CompanyLogoStore companyLogoStore, CompanyService companyService) {
+  public CompanyLogoServiceImpl(
+      CompanyLogoRepository companyLogoRepository,
+      CompanyLogoStore companyLogoStore,
+      CompanyService companyService) {
     this.companyLogoRepository = companyLogoRepository;
     this.companyLogoStore = companyLogoStore;
     this.companyService = companyService;
@@ -52,8 +53,7 @@ public class CompanyLogoServiceImpl implements CompanyLogoService {
 
   @Override
   public Optional<CompanyLogo> getCompanyLogo(UUID companyId) {
-    return this.companyService.getById(companyId)
-        .map(Company::getCompanyLogo);
+    return this.companyService.getById(companyId).map(Company::getCompanyLogo);
   }
 
   @Override
@@ -65,12 +65,12 @@ public class CompanyLogoServiceImpl implements CompanyLogoService {
   public Optional<CompanyLogo> setCompanyLogo(UUID companyId, InputStream inputStream)
       throws IOException {
     var optCompany = this.companyService.getById(companyId);
-    if(optCompany.isEmpty()) {
+    if (optCompany.isEmpty()) {
       return Optional.empty();
     }
     var company = optCompany.get();
     var companyLogo = company.getCompanyLogo();
-    if(companyLogo == null) {
+    if (companyLogo == null) {
       companyLogo = new CompanyLogo();
     }
 
@@ -78,11 +78,12 @@ public class CompanyLogoServiceImpl implements CompanyLogoService {
     byte[] bytes = inputStream.readAllBytes();
     TikaInputStream tikaInputStream = TikaInputStream.get(new ByteArrayInputStream(bytes));
     MediaType mediaType = detector.detect(tikaInputStream, new Metadata());
-    if(!mediaType.getType().equals("image")) {
+    if (!mediaType.getType().equals("image")) {
       throw new RuntimeException("Logo must be an image");
     }
     companyLogo.setMimeType(mediaType.getType() + "/" + mediaType.getSubtype());
-    CompanyLogo companyLogo1 = companyLogoStore.setContent(companyLogo, new ByteArrayInputStream(bytes));
+    CompanyLogo companyLogo1 =
+        companyLogoStore.setContent(companyLogo, new ByteArrayInputStream(bytes));
     companyLogo = this.save(companyLogo1);
 
     company.setCompanyLogo(companyLogo);
@@ -94,12 +95,12 @@ public class CompanyLogoServiceImpl implements CompanyLogoService {
   @Override
   public Optional<CompanyLogo> deleteCompanyLogo(UUID companyId) {
     var optCompany = this.companyService.getById(companyId);
-    if(optCompany.isEmpty()) {
+    if (optCompany.isEmpty()) {
       return Optional.empty();
     }
     var company = optCompany.get();
     var companyLogo = company.getCompanyLogo();
-    if(companyLogo != null) {
+    if (companyLogo != null) {
       var cl = companyLogoStore.unsetContent(companyLogo);
       company.setCompanyLogo(null);
       this.companyService.save(company);
@@ -108,6 +109,4 @@ public class CompanyLogoServiceImpl implements CompanyLogoService {
     }
     return Optional.empty();
   }
-
-
 }

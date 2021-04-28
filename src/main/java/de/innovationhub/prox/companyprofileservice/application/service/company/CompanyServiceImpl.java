@@ -11,7 +11,6 @@ import java.util.stream.StreamSupport;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -62,19 +61,24 @@ public class CompanyServiceImpl implements CompanyService {
               return c;
             })
         .map(companyRepository::save)
-        .orElseThrow(() -> new CustomEntityNotFoundException("Company with id " + id.toString() + " not found"));
+        .orElseThrow(
+            () ->
+                new CustomEntityNotFoundException(
+                    "Company with id " + id.toString() + " not found"));
   }
 
   @Override
   public void deleteById(UUID id) {
-    this.getById(id).ifPresentOrElse(
-        c -> {
-          this.companyLogoService.deleteCompanyLogo(c.getId());
-          this.companyRepository.deleteById(id);
-        }, () -> {
-          throw new CustomEntityNotFoundException("Company with id " + id.toString() + " not found");
-        }
-    );
+    this.getById(id)
+        .ifPresentOrElse(
+            c -> {
+              this.companyLogoService.deleteCompanyLogo(c.getId());
+              this.companyRepository.deleteById(id);
+            },
+            () -> {
+              throw new CustomEntityNotFoundException(
+                  "Company with id " + id.toString() + " not found");
+            });
   }
 
   @Override
@@ -89,7 +93,10 @@ public class CompanyServiceImpl implements CompanyService {
               company.setLanguages(languages);
               return this.save(company);
             })
-        .orElseThrow(() -> new CustomEntityNotFoundException("Company with id " + id.toString() + " not found"));
+        .orElseThrow(
+            () ->
+                new CustomEntityNotFoundException(
+                    "Company with id " + id.toString() + " not found"));
   }
 
   @Override

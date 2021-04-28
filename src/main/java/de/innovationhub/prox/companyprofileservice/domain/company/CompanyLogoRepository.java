@@ -5,6 +5,4 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompanyLogoRepository extends CrudRepository<CompanyLogo, UUID> {
-
-}
+public interface CompanyLogoRepository extends CrudRepository<CompanyLogo, UUID> {}

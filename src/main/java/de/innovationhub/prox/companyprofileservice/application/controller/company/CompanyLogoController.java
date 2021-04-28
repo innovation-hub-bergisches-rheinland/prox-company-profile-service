@@ -25,11 +25,10 @@ public interface CompanyLogoController {
   @PostMapping(
       value = "/{id}/logo",
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-  ResponseEntity<Void> postCompanyLogo(@PathVariable UUID id,
-      @RequestPart(value = "image", required = true)
-          MultipartFile image,
+  ResponseEntity<Void> postCompanyLogo(
+      @PathVariable UUID id,
+      @RequestPart(value = "image", required = true) MultipartFile image,
       HttpServletRequest request);
-
 
   @Operation(summary = "delete company logo", security = @SecurityRequirement(name = "Bearer"))
   @DeleteMapping(value = "/{id}/logo")

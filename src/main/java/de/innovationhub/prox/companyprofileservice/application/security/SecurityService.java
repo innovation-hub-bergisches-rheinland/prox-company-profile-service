@@ -14,28 +14,28 @@ public class SecurityService {
   private final CompanyRepository companyRepository;
 
   @Autowired
-  public SecurityService(KeycloakAuthenticationService keycloakAuthenticationService, CompanyRepository companyRepository){
+  public SecurityService(
+      KeycloakAuthenticationService keycloakAuthenticationService,
+      CompanyRepository companyRepository) {
     this.keycloakAuthenticationService = keycloakAuthenticationService;
     this.companyRepository = companyRepository;
   }
 
   public boolean authenticatedUserIsNotOwnerOfAnyCompany() {
     Optional<UUID> subjectId = this.keycloakAuthenticationService.getSubjectId();
-    if(subjectId.isEmpty()) {
+    if (subjectId.isEmpty()) {
       throw new RuntimeException("Unauthorized");
     }
-    return subjectId
-        .map(companyRepository::existsByCreatorId)
-        .orElse(false);
+    return subjectId.map(companyRepository::existsByCreatorId).orElse(false);
   }
 
   public boolean authenticatedUserIsOwnerOfCompany(UUID companyId) {
     Optional<UUID> subjectId = this.keycloakAuthenticationService.getSubjectId();
-    if(subjectId.isEmpty()) {
+    if (subjectId.isEmpty()) {
       throw new RuntimeException("Unauthorized");
     }
     Optional<Company> company = this.companyRepository.findById(companyId);
-    if(company.isEmpty()) {
+    if (company.isEmpty()) {
       throw new RuntimeException("Company does not exist");
     }
     return company.get().getCreatorId().equals(subjectId.get());

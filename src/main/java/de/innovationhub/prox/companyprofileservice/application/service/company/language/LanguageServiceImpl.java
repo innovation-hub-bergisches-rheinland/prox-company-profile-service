@@ -42,7 +42,10 @@ public class LanguageServiceImpl implements LanguageService {
               return l;
             })
         .map(languageRepository::save)
-        .orElseThrow(() -> new CustomEntityNotFoundException("Language with id " + id.toString() + " not found"));
+        .orElseThrow(
+            () ->
+                new CustomEntityNotFoundException(
+                    "Language with id " + id.toString() + " not found"));
   }
 
   @Override

@@ -52,11 +52,11 @@ public class CompanyControllerImpl implements CompanyController {
   @Override
   public ResponseEntity<EntityModel<Company>> getMyCompany() {
     Optional<UUID> subjectId = this.keycloakAuthenticationService.getSubjectId();
-    if(subjectId.isEmpty()) {
+    if (subjectId.isEmpty()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
     Optional<Company> company = companyService.findCompanyByCreatorId(subjectId.get());
-    if(company.isEmpty()) {
+    if (company.isEmpty()) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
     return ResponseEntity.ok(companyRepresentationModelAssembler.toModel(company.get()));
@@ -64,7 +64,13 @@ public class CompanyControllerImpl implements CompanyController {
 
   @Override
   public ResponseEntity<EntityModel<Company>> getCompany(UUID id) {
-    var company = companyService.getById(id).orElseThrow(() -> new CustomEntityNotFoundException("Company with id " + id.toString() + " not found"));
+    var company =
+        companyService
+            .getById(id)
+            .orElseThrow(
+                () ->
+                    new CustomEntityNotFoundException(
+                        "Company with id " + id.toString() + " not found"));
     return ResponseEntity.ok(companyRepresentationModelAssembler.toModel(company));
   }
 

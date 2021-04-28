@@ -7,12 +7,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyRepository;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageRepository;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
