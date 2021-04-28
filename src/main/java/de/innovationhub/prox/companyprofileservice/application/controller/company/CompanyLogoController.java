@@ -1,10 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
@@ -25,6 +21,7 @@ public interface CompanyLogoController {
   @GetMapping(value = "/{id}/logo", produces = "image/*")
   ResponseEntity<byte[]> getCompanyLogo(@PathVariable UUID id);
 
+  @Operation(summary = "set company logo", security = @SecurityRequirement(name = "Bearer"))
   @PostMapping(
       value = "/{id}/logo",
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -34,6 +31,7 @@ public interface CompanyLogoController {
       HttpServletRequest request);
 
 
+  @Operation(summary = "delete company logo", security = @SecurityRequirement(name = "Bearer"))
   @DeleteMapping(value = "/{id}/logo")
   ResponseEntity<Void> deleteCompanyLogo(@PathVariable UUID id, HttpServletRequest request);
 }

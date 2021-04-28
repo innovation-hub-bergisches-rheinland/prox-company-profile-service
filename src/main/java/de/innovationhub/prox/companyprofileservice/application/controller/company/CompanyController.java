@@ -3,7 +3,6 @@ package de.innovationhub.prox.companyprofileservice.application.controller.compa
 import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
-import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Map;
 import java.util.UUID;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -41,7 +39,7 @@ public interface CompanyController {
           mediaType = MediaType.APPLICATION_JSON_VALUE,
           schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "200", description = "OK")
-  @Operation(summary = "Get owned company of authenticated user")
+  @Operation(summary = "Get owned company of authenticated user", security = @SecurityRequirement(name = "Bearer"))
   @GetMapping(value = "/me", produces = MediaTypes.HAL_JSON_VALUE)
   ResponseEntity<EntityModel<Company>> getMyCompany();
 
@@ -100,7 +98,7 @@ public interface CompanyController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "200", description = "OK")
-  @Operation(summary = "Set company languages")
+  @Operation(summary = "Set company languages", security = @SecurityRequirement(name = "Bearer"))
   @PutMapping(
       value = "/{id}/languages",
       produces = MediaTypes.HAL_JSON_VALUE,
