@@ -1,6 +1,7 @@
 package de.innovationhub.prox.companyprofileservice.domain.company;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -26,6 +27,7 @@ public class CompanyInformation {
 
   private String homepage;
 
+  @Lob
   private String vita;
 
   public CompanyInformation(
