@@ -17,6 +17,7 @@ import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
+import de.innovationhub.prox.companyprofileservice.application.security.KeycloakAuthenticationService;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
@@ -51,6 +52,8 @@ import org.springframework.web.context.WebApplicationContext;
 class CompanyControllerTest {
 
   @MockBean private CompanyService companyService;
+
+  @MockBean private KeycloakAuthenticationService keycloakAuthenticationService;
 
   @Autowired private WebApplicationContext context;
 

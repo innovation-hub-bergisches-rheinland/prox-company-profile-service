@@ -32,7 +32,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest(controllers = LanguageController.class)
-@Import({LanguageRepresentationModelAssembler.class, WebConfig.class, KeycloakConfig.class})
+@Import({
+    LanguageRepresentationModelAssembler.class,
+    LanguageRepresentationModelAssembler.class,
+    WebConfig.class,
+    KeycloakConfig.class
+})
 @RunWith(SpringRunner.class)
 class LanguageControllerTest {
 
@@ -44,14 +49,14 @@ class LanguageControllerTest {
   private Iterable<Language> sampleLanguages;
 
   @BeforeEach
-  private void setup() {
+  void setup() {
     var languageSampleData = new LanguageSampleData();
     this.sampleLanguage = languageSampleData.getSAMPLE_LANGUAGE_1();
     this.sampleLanguages = languageSampleData.getSAMPLE_LANGUAGES();
   }
 
   @Test
-  void testGetAllLanguages() {
+  void testGetAllLanguages() throws Exception {
     when(languageService.getAllLanguages(any())).thenReturn(this.sampleLanguages);
 
     given()
