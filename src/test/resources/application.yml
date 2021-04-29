@@ -1,6 +1,9 @@
 eureka:
   client:
     enabled: false
+logging:
+  level:
+    .: debug
 keycloak:
   auth-server-url: https://login.archi-lab.io/auth
   bearer-only: true
