@@ -1,35 +1,7 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import de.innovationhub.prox.companyprofileservice.application.config.KeycloakConfig;
-import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyLogoService;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Optional;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.context.WebApplicationContext;
 
 //TODO: This test breaks the jenkins build
 /*@SpringBootTest

@@ -11,9 +11,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import de.innovationhub.prox.companyprofileservice.application.config.KeycloakConfig;
+import de.innovationhub.prox.companyprofileservice.application.config.SecurityConfig;
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
+import de.innovationhub.prox.companyprofileservice.application.security.UserIsOwnerOfCompanyPermissionEvaluator;
 import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageSampleData;
@@ -36,7 +37,7 @@ import org.springframework.web.context.WebApplicationContext;
     LanguageRepresentationModelAssembler.class,
     LanguageRepresentationModelAssembler.class,
     WebConfig.class,
-    KeycloakConfig.class
+    SecurityConfig.class
 })
 @RunWith(SpringRunner.class)
 class LanguageControllerTest {
@@ -44,6 +45,8 @@ class LanguageControllerTest {
   @MockBean private LanguageService languageService;
 
   @Autowired private WebApplicationContext context;
+
+  @MockBean private UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator;
 
   private Language sampleLanguage;
   private Iterable<Language> sampleLanguages;
@@ -53,6 +56,10 @@ class LanguageControllerTest {
     var languageSampleData = new LanguageSampleData();
     this.sampleLanguage = languageSampleData.getSAMPLE_LANGUAGE_1();
     this.sampleLanguages = languageSampleData.getSAMPLE_LANGUAGES();
+
+    //unnecessary as KeycloakConfig.class is not in ApplicationContext. Leave it in for reference
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
   }
 
   @Test

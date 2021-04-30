@@ -12,12 +12,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import de.innovationhub.prox.companyprofileservice.application.config.KeycloakConfig;
+import de.innovationhub.prox.companyprofileservice.application.config.SecurityConfig;
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.security.KeycloakAuthenticationService;
+import de.innovationhub.prox.companyprofileservice.application.security.UserIsOwnerOfCompanyPermissionEvaluator;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
@@ -46,7 +47,7 @@ import org.springframework.web.context.WebApplicationContext;
   CompanyRepresentationModelAssembler.class,
   LanguageRepresentationModelAssembler.class,
   WebConfig.class,
-  KeycloakConfig.class
+  SecurityConfig.class
 })
 @RunWith(SpringRunner.class)
 class CompanyControllerTest {
@@ -54,6 +55,8 @@ class CompanyControllerTest {
   @MockBean private CompanyService companyService;
 
   @MockBean private KeycloakAuthenticationService keycloakAuthenticationService;
+
+  @MockBean private UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator;
 
   @Autowired private WebApplicationContext context;
 
@@ -63,6 +66,10 @@ class CompanyControllerTest {
   public void setup() {
     var companySampleData = new CompanySampleData();
     this.sampleCompany = companySampleData.getSAMPLE_COMPANY_1();
+
+    //unnecessary as KeycloakConfig.class is not in ApplicationContext. Leave it in for reference
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
   }
 
   @DisplayName("GET /companies should return OK")
