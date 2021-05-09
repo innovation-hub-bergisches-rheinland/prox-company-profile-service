@@ -33,7 +33,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Company extends AbstractEntity {
 
   @CreatedBy
-  @JsonIgnore
+  //@JsonIgnore
   @Column(unique = true)
   private UUID creatorId;
 
