@@ -58,6 +58,7 @@ public class CompanyServiceImpl implements CompanyService {
               c.setLanguages(company.getLanguages());
               c.setBranches(company.getBranches());
               c.setInformation(company.getInformation());
+              c.setSocialMedia(company.getSocialMedia());
               return c;
             })
         .map(companyRepository::save)
