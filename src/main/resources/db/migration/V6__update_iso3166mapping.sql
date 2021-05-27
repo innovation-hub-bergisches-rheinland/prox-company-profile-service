@@ -1,0 +1,10 @@
+UPDATE language SET iso3166_mapping = 'sa' WHERE id ='64bd052b-bef1-4f51-95ee-3c934f59bf73';
+UPDATE language SET iso3166_mapping = null WHERE id ='768d8c2f-2e09-4c9f-ab53-34089dd51c8c';
+UPDATE language SET iso3166_mapping = 'ng' WHERE id = 'a4741a2b-209e-4a2f-84a4-922d3112c3b7';
+UPDATE language SET iso3166_mapping = null WHERE id ='768d8c2f-2e09-4c9f-ab53-34089dd51c8c';
+UPDATE language SET iso3166_mapping = null WHERE id ='d38ae215-c477-4f47-9376-b8d4f6fe56bf';
+UPDATE language SET iso3166_mapping = null WHERE id ='5d41aacf-f709-499f-ac57-6dce68144753';
+UPDATE language SET iso3166_mapping = null WHERE id ='b1dbe625-d934-474f-9a9f-643351344b40';
+UPDATE language SET iso3166_mapping = 'ru' WHERE id = 'b645f1dd-ff42-41cb-8ed3-bddcc3f712a5';
+UPDATE language SET iso3166_mapping = null WHERE id ='d8db3cd8-56ea-4cdb-bf11-230815983c8a';
+UPDATE language SET iso3166_mapping = null WHERE id = 'a06d67b2-ed28-424c-b698-bd803c4a6959';
