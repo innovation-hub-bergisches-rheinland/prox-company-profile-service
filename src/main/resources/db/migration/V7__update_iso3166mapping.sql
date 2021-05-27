@@ -1,0 +1,1 @@
+UPDATE language SET iso3166_mapping = null WHERE id = '93b9767f-da4f-4087-884d-46260886f311';
