@@ -32,8 +32,8 @@ class LanguageServiceImplTest {
   @BeforeEach
   void setUp() {}
 
-  Language sampleLanguage = new Language("de", "German", "Deutsch", Type.LIVING);
-  Language sampleLanguage2 = new Language("en", "English", "Englisch", Type.LIVING);
+  Language sampleLanguage = new Language("de", "German", "Deutsch", Type.LIVING, "de");
+  Language sampleLanguage2 = new Language("en", "English", "Englisch", Type.LIVING, "en");
   Iterable<Language> sampleLanguages = Set.of(sampleLanguage, sampleLanguage2);
 
   @DisplayName("Should return all languages")

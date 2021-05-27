@@ -67,9 +67,11 @@ class CompanyControllerTest {
     var companySampleData = new CompanySampleData();
     this.sampleCompany = companySampleData.getSAMPLE_COMPANY_1();
 
-    //unnecessary as KeycloakConfig.class is not in ApplicationContext. Leave it in for reference
-    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
-    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
+    // unnecessary as KeycloakConfig.class is not in ApplicationContext. Leave it in for reference
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any()))
+        .thenReturn(true);
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any(), any()))
+        .thenReturn(true);
   }
 
   @DisplayName("GET /companies should return OK")
@@ -112,7 +114,7 @@ class CompanyControllerTest {
   void testGetCompanyLanguages() {
     when(companyService.getCompanyLanguages(eq(sampleCompany.getId())))
         .thenReturn(
-            Collections.singletonList(new Language("de", "German", "Deutsch", Type.LIVING)));
+            Collections.singletonList(new Language("de", "German", "Deutsch", Type.LIVING, "de")));
 
     given()
         .webAppContextSetup(context)
