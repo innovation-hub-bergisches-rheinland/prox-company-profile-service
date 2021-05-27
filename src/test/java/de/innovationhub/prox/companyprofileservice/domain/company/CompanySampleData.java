@@ -28,7 +28,8 @@ public class CompanySampleData {
             quarterSampleData.getSAMPLE_QUARTER_1(),
             quarterSampleData.getSAMPLE_QUARTERS(),
             languageSampleData.getSAMPLE_LANGUAGES(),
-            branchSampleData.getSAMPLE_BRANCHES());
+            branchSampleData.getSAMPLE_BRANCHES(),
+            Set.of(new SocialMedia(SocialMediaType.FACEBOOK, "test")));
 
     this.SAMPLE_COMPANY_2 =
         new Company(
@@ -37,7 +38,8 @@ public class CompanySampleData {
             quarterSampleData.getSAMPLE_QUARTER_2(),
             quarterSampleData.getSAMPLE_QUARTERS(),
             languageSampleData.getSAMPLE_LANGUAGES(),
-            branchSampleData.getSAMPLE_BRANCHES());
+            branchSampleData.getSAMPLE_BRANCHES(),
+            Set.of(new SocialMedia(SocialMediaType.FACEBOOK, "test")));
 
     this.SAMPLE_COMPANIES = new HashSet<>(Arrays.asList(SAMPLE_COMPANY_1, SAMPLE_COMPANY_2));
   }

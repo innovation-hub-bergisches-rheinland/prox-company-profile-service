@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.innovationhub.prox.companyprofileservice.domain.company.Branch;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
+import de.innovationhub.prox.companyprofileservice.domain.company.SocialMedia;
+import de.innovationhub.prox.companyprofileservice.domain.company.SocialMediaType;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -48,12 +50,26 @@ class CompanyJsonTest {
         .extractingJsonPathArrayValue("$.branches[*].branchName")
         .containsExactlyInAnyOrderElementsOf(
             company.getBranches().stream().map(Branch::getBranchName).collect(Collectors.toList()));
+
+    assertThat(result)
+        .extractingJsonPathArrayValue("$.socialMedia[*].account")
+        .containsExactlyInAnyOrderElementsOf(
+            company.getSocialMedia().stream()
+                .map(SocialMedia::getAccount)
+                .collect(Collectors.toList()));
+
+    assertThat(result)
+        .extractingJsonPathArrayValue("$.socialMedia[*].type")
+        .containsExactlyInAnyOrderElementsOf(
+            company.getSocialMedia().stream()
+                .map(s -> s.getType().toString())
+                .collect(Collectors.toList()));
   }
 
   @Test
   void testDeserialize() throws Exception {
     String jsonContent =
-        "{\"id\":\"d8004470-676a-4511-97c3-7217d37ae4b8\",\"information\":{\"name\":\"Company name\",\"foundingDate\":\"18-04-2021\",\"numberOfEmployees\":\"about 200\",\"homepage\":\"www.example.org\",\"vita\":\"Lorem Ipsum\"},\"branches\":[{\"branchName\":\"Automotive\"},{\"branchName\":\"Industrie 4.0\"}]}";
+        "{\"id\":\"d8004470-676a-4511-97c3-7217d37ae4b8\",\"information\":{\"name\":\"Company name\",\"foundingDate\":\"18-04-2021\",\"numberOfEmployees\":\"about 200\",\"homepage\":\"www.example.org\",\"vita\":\"Lorem Ipsum\"},\"branches\":[{\"branchName\":\"Automotive\"},{\"branchName\":\"Industrie 4.0\"}],\"socialMedia\":[{\"type\":\"FACEBOOK\",\"account\":\"test\"}]}";
 
     Company company = this.json.parse(jsonContent).getObject();
 
@@ -68,5 +84,9 @@ class CompanyJsonTest {
     assertThat(company.getBranches())
         .containsExactlyInAnyOrderElementsOf(
             Arrays.asList(new Branch("Automotive"), new Branch("Industrie 4.0")));
+
+    assertThat(company.getSocialMedia())
+        .containsExactlyInAnyOrderElementsOf(
+            Arrays.asList(new SocialMedia(SocialMediaType.FACEBOOK, "test")));
   }
 }
