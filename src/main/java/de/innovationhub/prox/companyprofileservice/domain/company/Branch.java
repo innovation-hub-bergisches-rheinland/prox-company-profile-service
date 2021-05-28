@@ -2,6 +2,7 @@ package de.innovationhub.prox.companyprofileservice.domain.company;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +16,9 @@ import lombok.ToString;
 @ToString
 public class Branch {
 
-  @NotBlank private String branchName;
+  @NotBlank
+  @Size(max = 255)
+  private String branchName;
 
   public Branch(String branchName) {
     if (branchName == null || branchName.isBlank()) {

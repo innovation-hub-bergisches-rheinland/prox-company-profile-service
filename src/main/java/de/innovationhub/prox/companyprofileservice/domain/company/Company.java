@@ -15,20 +15,15 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@EqualsAndHashCode(callSuper = true)
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -41,7 +36,7 @@ public class Company extends AbstractEntity {
 
   @Embedded @NotNull private CompanyInformation information;
 
-  @Embedded private Quarter headquarter;
+  @Embedded @Valid private Quarter headquarter;
 
   @ElementCollection
   @JsonInclude(Include.ALWAYS)
