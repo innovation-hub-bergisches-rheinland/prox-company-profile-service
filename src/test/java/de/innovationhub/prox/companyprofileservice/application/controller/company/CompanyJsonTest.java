@@ -45,6 +45,9 @@ class CompanyJsonTest {
     assertThat(result)
         .extractingJsonPathValue("$.information.vita")
         .isEqualTo(company.getInformation().getVita());
+    assertThat(result)
+        .extractingJsonPathValue("$.information.contactEmail")
+        .isEqualTo(company.getInformation().getContactEmail());
 
     assertThat(result)
         .extractingJsonPathArrayValue("$.branches[*].branchName")
@@ -69,7 +72,7 @@ class CompanyJsonTest {
   @Test
   void testDeserialize() throws Exception {
     String jsonContent =
-        "{\"id\":\"d8004470-676a-4511-97c3-7217d37ae4b8\",\"information\":{\"name\":\"Company name\",\"foundingDate\":\"18-04-2021\",\"numberOfEmployees\":\"about 200\",\"homepage\":\"www.example.org\",\"vita\":\"Lorem Ipsum\"},\"branches\":[{\"branchName\":\"Automotive\"},{\"branchName\":\"Industrie 4.0\"}],\"socialMedia\":[{\"type\":\"FACEBOOK\",\"account\":\"test\"}]}";
+        "{\"id\":\"d8004470-676a-4511-97c3-7217d37ae4b8\",\"information\":{\"name\":\"Company name\",\"foundingDate\":\"18-04-2021\",\"numberOfEmployees\":\"about 200\",\"homepage\":\"www.example.org\",\"vita\":\"Lorem Ipsum\",\"contactEmail\":\"test@example.org\"},\"branches\":[{\"branchName\":\"Automotive\"},{\"branchName\":\"Industrie 4.0\"}],\"socialMedia\":[{\"type\":\"FACEBOOK\",\"account\":\"test\"}]}";
 
     Company company = this.json.parse(jsonContent).getObject();
 
@@ -80,6 +83,7 @@ class CompanyJsonTest {
     assertThat(company.getInformation().getHomepage()).isEqualTo("www.example.org");
     assertThat(company.getInformation().getNumberOfEmployees()).isEqualTo("about 200");
     assertThat(company.getInformation().getVita()).isEqualTo("Lorem Ipsum");
+    assertThat(company.getInformation().getContactEmail()).isEqualTo("test@example.org");
 
     assertThat(company.getBranches())
         .containsExactlyInAnyOrderElementsOf(

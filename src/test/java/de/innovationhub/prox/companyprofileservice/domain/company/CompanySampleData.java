@@ -24,7 +24,12 @@ public class CompanySampleData {
     this.SAMPLE_COMPANY_1 =
         new Company(
             new CompanyInformation(
-                "Company name", "18-04-2021", "about 200", "www.example.org", "Lorem Ipsum"),
+                "Company name",
+                "18-04-2021",
+                "about 200",
+                "www.example.org",
+                "Lorem Ipsum",
+                "test@example.org"),
             quarterSampleData.getSAMPLE_QUARTER_1(),
             quarterSampleData.getSAMPLE_QUARTERS(),
             languageSampleData.getSAMPLE_LANGUAGES(),
@@ -34,7 +39,12 @@ public class CompanySampleData {
     this.SAMPLE_COMPANY_2 =
         new Company(
             new CompanyInformation(
-                "Company name 2", "19-04-2021", "about 200", "www.example.org", "Lorem Ipsum"),
+                "Company name 2",
+                "19-04-2021",
+                "about 200",
+                "www.example.org",
+                "Lorem Ipsum",
+                "test@example.org"),
             quarterSampleData.getSAMPLE_QUARTER_2(),
             quarterSampleData.getSAMPLE_QUARTERS(),
             languageSampleData.getSAMPLE_LANGUAGES(),

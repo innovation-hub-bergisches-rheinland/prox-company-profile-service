@@ -43,7 +43,12 @@ class CompanyIntegrationTest {
     var company =
         new Company(
             new CompanyInformation(
-                "Company Inc", "19-04-2021", "about 200", "www.example.org", "Lorem Ipsum"));
+                "Company Inc",
+                "19-04-2021",
+                "about 200",
+                "www.example.org",
+                "Lorem Ipsum",
+                "test@example.org"));
     Quarter headquarter = new Quarter("Headquarter");
     var branch = new Branch("Automotive");
     var branches = Set.of(branch);
@@ -88,7 +93,12 @@ class CompanyIntegrationTest {
     var company =
         new Company(
             new CompanyInformation(
-                "Company Inc", "19-04-2021", "about 200", "www.example.org", "Lorem Ipsum"));
+                "Company Inc",
+                "19-04-2021",
+                "about 200",
+                "www.example.org",
+                "Lorem Ipsum",
+                "test@example.org"));
     var branch = new Branch("Automotive");
     var branches = Set.of(branch);
     company.setBranches(branches);
@@ -96,7 +106,8 @@ class CompanyIntegrationTest {
 
     // Update Company
     company.setBranches(Set.of());
-    company.setInformation(new CompanyInformation("Company Inc 2", "Today", null, null, null));
+    company.setInformation(
+        new CompanyInformation("Company Inc 2", "Today", null, null, null, "test@example.org"));
 
     var companyResponse =
         given()
@@ -132,7 +143,12 @@ class CompanyIntegrationTest {
     var company =
         new Company(
             new CompanyInformation(
-                "Company Inc", "19-04-2021", "about 200", "www.example.org", "Lorem Ipsum"));
+                "Company Inc",
+                "19-04-2021",
+                "about 200",
+                "www.example.org",
+                "Lorem Ipsum",
+                "test@example.org"));
     companyRepository.save(company);
 
     // Save languages

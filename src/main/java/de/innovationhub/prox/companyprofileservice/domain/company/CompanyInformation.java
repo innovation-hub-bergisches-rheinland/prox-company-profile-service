@@ -2,6 +2,7 @@ package de.innovationhub.prox.companyprofileservice.domain.company;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -33,15 +34,25 @@ public class CompanyInformation {
   @Size(max = 255)
   private String homepage;
 
+  @Size(max = 255)
+  @Email
+  private String contactEmail;
+
   @Lob private String vita;
 
   public CompanyInformation(
-      String name, String foundingDate, String numberOfEmployees, String homepage, String vita) {
+      String name,
+      String foundingDate,
+      String numberOfEmployees,
+      String homepage,
+      String vita,
+      String contactEmail) {
     this.setName(name);
     this.setFoundingDate(foundingDate);
     this.setNumberOfEmployees(numberOfEmployees);
     this.setHomepage(homepage);
     this.setVita(vita);
+    this.setContactEmail(contactEmail);
   }
 
   public CompanyInformation(String name) {
