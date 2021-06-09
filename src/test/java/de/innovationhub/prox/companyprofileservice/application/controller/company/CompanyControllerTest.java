@@ -268,4 +268,43 @@ class CompanyControllerTest {
 
     verify(companyService).update(eq(sampleCompany.getId()), any(Company.class));
   }
+
+  @DisplayName("GET /companies/search/findCompanyByCreatorId should return OK")
+  @Test
+  void testFindCompanyByCreatorId() {
+    UUID creatorId = UUID.randomUUID();
+    when(companyService.findCompanyByCreatorId(eq(creatorId)))
+        .thenReturn(Optional.of(sampleCompany));
+
+    given()
+        .webAppContextSetup(context)
+        .header("Accept", MediaTypes.HAL_JSON_VALUE)
+        .queryParam("creatorId", creatorId.toString())
+        .when()
+        .get("/companies/search/findCompanyByCreatorId")
+        .then()
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
+        .status(HttpStatus.OK);
+
+    verify(companyService).findCompanyByCreatorId(eq(creatorId));
+  }
+
+  @DisplayName("GET /companies/search/findCompanyByCreatorId should return NOT_FOUND")
+  @Test
+  void testFindCompanyByCreatorId_NotFound() {
+    UUID creatorId = UUID.randomUUID();
+    when(companyService.findCompanyByCreatorId(eq(creatorId))).thenReturn(Optional.empty());
+
+    given()
+        .webAppContextSetup(context)
+        .header("Accept", MediaTypes.HAL_JSON_VALUE)
+        .queryParam("creatorId", creatorId.toString())
+        .when()
+        .get("/companies/search/findCompanyByCreatorId")
+        .then()
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
+        .status(HttpStatus.NOT_FOUND);
+
+    verify(companyService).findCompanyByCreatorId(eq(creatorId));
+  }
 }

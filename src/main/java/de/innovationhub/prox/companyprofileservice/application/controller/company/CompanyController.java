@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Company API", description = "APIs for companies")
 @RequestMapping("companies")
@@ -165,4 +166,23 @@ public interface CompanyController {
       produces = MediaTypes.HAL_JSON_VALUE)
   ResponseEntity<EntityModel<Company>> updateCompany(
       @PathVariable UUID id, @RequestBody Company professor);
+
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid UUID",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "No company with the given ID found",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "200", description = "OK")
+  @Operation(summary = "Get company")
+  @GetMapping(value = "/search/findCompanyByCreatorId", produces = MediaTypes.HAL_JSON_VALUE)
+  ResponseEntity<EntityModel<Company>> findCompanyByCreatorId(@RequestParam UUID creatorId);
 }

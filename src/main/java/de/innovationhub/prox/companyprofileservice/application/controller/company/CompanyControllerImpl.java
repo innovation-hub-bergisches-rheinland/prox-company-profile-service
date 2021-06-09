@@ -109,4 +109,12 @@ public class CompanyControllerImpl implements CompanyController {
 
     return ResponseEntity.ok(this.companyRepresentationModelAssembler.toModel(savedCompany));
   }
+
+  @Override
+  public ResponseEntity<EntityModel<Company>> findCompanyByCreatorId(UUID creatorId) {
+    return this.companyService
+        .findCompanyByCreatorId(creatorId)
+        .map(c -> ResponseEntity.ok(companyRepresentationModelAssembler.toModel(c)))
+        .orElseThrow(() -> new CustomEntityNotFoundException("No company found"));
+  }
 }
