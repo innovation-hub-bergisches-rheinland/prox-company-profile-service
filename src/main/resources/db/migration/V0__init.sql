@@ -1,16 +1,20 @@
-create table company (id uuid not null, founding_date varchar(255), homepage varchar(255), name varchar(255), number_of_employees varchar(255), vita varchar(255), headquarter_id uuid, primary key (id));
+create table company (id uuid not null, location varchar(255), founding_date varchar(255), homepage varchar(255), name varchar(255), number_of_employees varchar(255), vita varchar(255), company_logo_id uuid, primary key (id));
 create table company_branches (company_id uuid not null, branch_name varchar(255));
 create table company_languages (company_id uuid not null, languages_id uuid not null, primary key (company_id, languages_id));
-create table company_quarters (company_id uuid not null, quarters_id uuid not null, primary key (company_id, quarters_id));
-create table language (id uuid not null, english_name varchar(255), german_name varchar(255), iso_identifier2 varchar(2), type integer not null, primary key (id));
-create table quarter (id uuid not null, location varchar(255), primary key (id));
+create table company_quarters (company_id uuid not null, location varchar(255));
+create table company_logo (id uuid not null, content_id uuid, content_length int8, mime_type varchar(255), primary key (id));
+create table country (id uuid not null, english_name varchar(255), german_name varchar(255), iso_identifier2 varchar(2), primary key (id));
+create table language (id uuid not null, english_name varchar(255), german_name varchar(255), iso_identifier2 varchar(2), type int4 not null, primary key (id));
+create table location (id uuid not null, coordiantes varchar(255) not null, locode varchar(3) not null, name varchar(255) not null, name_without_diacritics varchar(255) not null, country_id uuid not null, primary key (id));
+alter table country add constraint UK_2vfxe8sd8nhvd1lpn6pvw147x unique (iso_identifier2);
 alter table language add constraint UK_ox5svkhkvot75m4c12xvy7sko unique (iso_identifier2);
-alter table company add constraint FKrgcdn21v5cw7dvuptlvdf9ynl foreign key (headquarter_id) references quarter;
+alter table location add constraint UK_ndmw96jtvo3mq70rcdifvhmbi unique (locode);
+alter table company add constraint FKj5vmwp7ppnh6drhyawkx2h6o foreign key (company_logo_id) references company_logo;
 alter table company_branches add constraint FKisn84t8fa2r4bid45ucdux2qj foreign key (company_id) references company;
 alter table company_languages add constraint FKrqod7lgl1v96un6kok9906iop foreign key (languages_id) references language;
 alter table company_languages add constraint FKf049v9qaxxjpc7vhph4hp8t0o foreign key (company_id) references company;
-alter table company_quarters add constraint FKdhuxfqsp6pxo17w1s6x8bunqg foreign key (quarters_id) references quarter;
 alter table company_quarters add constraint FKe3g0gkgljwtl8oypmvdbxqdyw foreign key (company_id) references company;
+alter table location add constraint FKn5m6ve3ryy2r25qvisdrg0aos foreign key (country_id) references country;
 
 
 INSERT INTO language(id,iso_identifier2,german_name,english_name,type) VALUES ('54379a94-804a-43b6-b194-c27a896917b9','aa','Afar','Afar',1);

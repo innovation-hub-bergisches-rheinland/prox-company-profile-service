@@ -1,12 +1,8 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyLogoService;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
@@ -16,18 +12,15 @@ import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogo;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogoRepository;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyLogoStore;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyRepository;
-import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.ResourceUtils;
@@ -36,23 +29,17 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest
 class CompanyLogoIntegrationTest {
 
-  @Autowired
-  WebApplicationContext context;
+  @Autowired WebApplicationContext context;
 
-  @Autowired
-  CompanyLogoRepository companyLogoRepository;
+  @Autowired CompanyLogoRepository companyLogoRepository;
 
-  @Autowired
-  CompanyLogoStore companyLogoStore;
+  @Autowired CompanyLogoStore companyLogoStore;
 
-  @Autowired
-  CompanyLogoService companyLogoService;
+  @Autowired CompanyLogoService companyLogoService;
 
-  @Autowired
-  CompanyService companyService;
+  @Autowired CompanyService companyService;
 
-  @Autowired
-  CompanyRepository companyRepository;
+  @Autowired CompanyRepository companyRepository;
 
   private File file;
 
@@ -64,23 +51,26 @@ class CompanyLogoIntegrationTest {
   @DisplayName("Should get image")
   @Test
   void shouldGetImage() throws IOException {
-    //Given
+    // Given
     var company = new Company(new CompanyInformation("Company A"));
     CompanyLogo companyLogo = new CompanyLogo(UUID.randomUUID(), 121415L, "image/png");
     companyLogo = this.companyLogoStore.setContent(companyLogo, new FileInputStream(file));
     companyLogo = this.companyLogoRepository.save(companyLogo);
     company.setCompanyLogo(companyLogo);
+    company.setCreatorId(UUID.randomUUID());
     companyRepository.save(company);
 
-    byte[] bytes = given()
-        .webAppContextSetup(context)
-        .header("Accept", "image/*")
-        .when()
-        .get("/companies/{id}/logo", company.getId().toString())
-        .then()
-        .status(HttpStatus.OK)
-        .header("Content-Type", companyLogo.getMimeType())
-        .extract().asByteArray();
+    byte[] bytes =
+        given()
+            .webAppContextSetup(context)
+            .header("Accept", "image/*")
+            .when()
+            .get("/companies/{id}/logo", company.getId().toString())
+            .then()
+            .status(HttpStatus.OK)
+            .header("Content-Type", companyLogo.getMimeType())
+            .extract()
+            .asByteArray();
 
     assertArrayEquals(new FileInputStream(file).readAllBytes(), bytes);
   }
@@ -90,6 +80,7 @@ class CompanyLogoIntegrationTest {
   void shouldSaveImage() throws IOException {
     var company = new Company(new CompanyInformation("Company A"));
     company.setCompanyLogo(null);
+    company.setCreatorId(UUID.randomUUID());
     companyRepository.save(company);
 
     given()
@@ -114,6 +105,7 @@ class CompanyLogoIntegrationTest {
     companyLogo = companyLogoStore.setContent(companyLogo, new FileInputStream(file));
     companyLogo = companyLogoRepository.save(companyLogo);
     company.setCompanyLogo(companyLogo);
+    company.setCreatorId(UUID.randomUUID());
     companyRepository.save(company);
 
     given()
@@ -125,5 +117,4 @@ class CompanyLogoIntegrationTest {
 
     assertTrue(companyLogoService.getCompanyLogo(company.getId()).isEmpty());
   }
-
 }

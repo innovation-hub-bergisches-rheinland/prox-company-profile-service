@@ -39,10 +39,10 @@ public class SpringdocConfig {
                 .description("PROX Development API"))
         .info(
             new Info()
-                .title("PROX Professor Profile Service")
+                .title("PROX Company Profile Service")
                 .version("0.1.0")
                 .description(
-                    "This Service is part of [PROX](https://prox.innovation-hub.de/) and is used to give professors the opportunity to create a custom profile as an informative source about him/her and the projects he/her offers"))
+                    "This Service is part of [PROX](https://prox.innovation-hub.de/) and is used to give companies the opportunity to create a custom profile as an informative source about it and the projects it offers"))
         .components(
             new Components()
                 .addSecuritySchemes(

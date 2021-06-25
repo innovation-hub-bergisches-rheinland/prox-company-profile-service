@@ -1,6 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.service.company.language;
 
-import de.innovationhub.prox.companyprofileservice.application.exception.company.language.LanguageNotFoundException;
+import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageRepository;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Type;
@@ -42,7 +42,10 @@ public class LanguageServiceImpl implements LanguageService {
               return l;
             })
         .map(languageRepository::save)
-        .orElseThrow(LanguageNotFoundException::new);
+        .orElseThrow(
+            () ->
+                new CustomEntityNotFoundException(
+                    "Language with id " + id.toString() + " not found"));
   }
 
   @Override

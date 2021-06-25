@@ -1,0 +1,2 @@
+create table company_social_media (company_id uuid not null, account varchar(255), type int4);
+alter table company_social_media add constraint FKe9f5nnt7dtcbrxywclt664ll foreign key (company_id) references company;

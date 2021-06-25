@@ -12,10 +12,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.innovationhub.prox.companyprofileservice.application.config.SecurityConfig;
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
-import de.innovationhub.prox.companyprofileservice.application.exception.company.language.LanguageNotFoundException;
+import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
+import de.innovationhub.prox.companyprofileservice.application.security.KeycloakAuthenticationService;
+import de.innovationhub.prox.companyprofileservice.application.security.UserIsOwnerOfCompanyPermissionEvaluator;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanySampleData;
@@ -43,12 +46,17 @@ import org.springframework.web.context.WebApplicationContext;
 @Import({
   CompanyRepresentationModelAssembler.class,
   LanguageRepresentationModelAssembler.class,
-  WebConfig.class
+  WebConfig.class,
+  SecurityConfig.class
 })
 @RunWith(SpringRunner.class)
 class CompanyControllerTest {
 
   @MockBean private CompanyService companyService;
+
+  @MockBean private KeycloakAuthenticationService keycloakAuthenticationService;
+
+  @MockBean private UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator;
 
   @Autowired private WebApplicationContext context;
 
@@ -58,6 +66,12 @@ class CompanyControllerTest {
   public void setup() {
     var companySampleData = new CompanySampleData();
     this.sampleCompany = companySampleData.getSAMPLE_COMPANY_1();
+
+    // unnecessary as KeycloakConfig.class is not in ApplicationContext. Leave it in for reference
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any()))
+        .thenReturn(true);
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any(), any()))
+        .thenReturn(true);
   }
 
   @DisplayName("GET /companies should return OK")
@@ -100,7 +114,7 @@ class CompanyControllerTest {
   void testGetCompanyLanguages() {
     when(companyService.getCompanyLanguages(eq(sampleCompany.getId())))
         .thenReturn(
-            Collections.singletonList(new Language("de", "German", "Deutsch", Type.LIVING)));
+            Collections.singletonList(new Language("de", "German", "Deutsch", Type.LIVING, "de")));
 
     given()
         .webAppContextSetup(context)
@@ -145,7 +159,7 @@ class CompanyControllerTest {
   @Test
   void testSetCompanyLanguagesInvalid() {
     when(companyService.setCompanyLanguages(eq(this.sampleCompany.getId()), anySet()))
-        .thenThrow(new LanguageNotFoundException());
+        .thenThrow(new CustomEntityNotFoundException("Langauge not found"));
 
     String[] uuids = new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()};
 
@@ -253,5 +267,44 @@ class CompanyControllerTest {
             response -> equalTo("http://localhost/companies/" + response.path("id")));
 
     verify(companyService).update(eq(sampleCompany.getId()), any(Company.class));
+  }
+
+  @DisplayName("GET /companies/search/findCompanyByCreatorId should return OK")
+  @Test
+  void testFindCompanyByCreatorId() {
+    UUID creatorId = UUID.randomUUID();
+    when(companyService.findCompanyByCreatorId(eq(creatorId)))
+        .thenReturn(Optional.of(sampleCompany));
+
+    given()
+        .webAppContextSetup(context)
+        .header("Accept", MediaTypes.HAL_JSON_VALUE)
+        .queryParam("creatorId", creatorId.toString())
+        .when()
+        .get("/companies/search/findCompanyByCreatorId")
+        .then()
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
+        .status(HttpStatus.OK);
+
+    verify(companyService).findCompanyByCreatorId(eq(creatorId));
+  }
+
+  @DisplayName("GET /companies/search/findCompanyByCreatorId should return NOT_FOUND")
+  @Test
+  void testFindCompanyByCreatorId_NotFound() {
+    UUID creatorId = UUID.randomUUID();
+    when(companyService.findCompanyByCreatorId(eq(creatorId))).thenReturn(Optional.empty());
+
+    given()
+        .webAppContextSetup(context)
+        .header("Accept", MediaTypes.HAL_JSON_VALUE)
+        .queryParam("creatorId", creatorId.toString())
+        .when()
+        .get("/companies/search/findCompanyByCreatorId")
+        .then()
+        .header("Content-Type", MediaTypes.HAL_JSON_VALUE)
+        .status(HttpStatus.NOT_FOUND);
+
+    verify(companyService).findCompanyByCreatorId(eq(creatorId));
   }
 }

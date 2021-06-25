@@ -11,8 +11,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.innovationhub.prox.companyprofileservice.application.config.SecurityConfig;
 import de.innovationhub.prox.companyprofileservice.application.config.WebConfig;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
+import de.innovationhub.prox.companyprofileservice.application.security.UserIsOwnerOfCompanyPermissionEvaluator;
 import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageSampleData;
@@ -31,7 +33,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest(controllers = LanguageController.class)
-@Import({LanguageRepresentationModelAssembler.class, WebConfig.class})
+@Import({
+    LanguageRepresentationModelAssembler.class,
+    LanguageRepresentationModelAssembler.class,
+    WebConfig.class,
+    SecurityConfig.class
+})
 @RunWith(SpringRunner.class)
 class LanguageControllerTest {
 
@@ -39,18 +46,24 @@ class LanguageControllerTest {
 
   @Autowired private WebApplicationContext context;
 
+  @MockBean private UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator;
+
   private Language sampleLanguage;
   private Iterable<Language> sampleLanguages;
 
   @BeforeEach
-  private void setup() {
+  void setup() {
     var languageSampleData = new LanguageSampleData();
     this.sampleLanguage = languageSampleData.getSAMPLE_LANGUAGE_1();
     this.sampleLanguages = languageSampleData.getSAMPLE_LANGUAGES();
+
+    //unnecessary as KeycloakConfig.class is not in ApplicationContext. Leave it in for reference
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
   }
 
   @Test
-  void testGetAllLanguages() {
+  void testGetAllLanguages() throws Exception {
     when(languageService.getAllLanguages(any())).thenReturn(this.sampleLanguages);
 
     given()

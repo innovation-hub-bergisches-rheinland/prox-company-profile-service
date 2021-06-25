@@ -1,6 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.service.company;
 
-import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
+import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.CompanyRepository;
@@ -58,22 +58,28 @@ public class CompanyServiceImpl implements CompanyService {
               c.setLanguages(company.getLanguages());
               c.setBranches(company.getBranches());
               c.setInformation(company.getInformation());
+              c.setSocialMedia(company.getSocialMedia());
               return c;
             })
         .map(companyRepository::save)
-        .orElseThrow(CompanyNotFoundException::new);
+        .orElseThrow(
+            () ->
+                new CustomEntityNotFoundException(
+                    "Company with id " + id.toString() + " not found"));
   }
 
   @Override
   public void deleteById(UUID id) {
-    this.getById(id).ifPresentOrElse(
-        c -> {
-          this.companyLogoService.deleteCompanyLogo(c.getId());
-          this.companyRepository.deleteById(id);
-        }, () -> {
-          throw new CompanyNotFoundException();
-        }
-    );
+    this.getById(id)
+        .ifPresentOrElse(
+            c -> {
+              this.companyLogoService.deleteCompanyLogo(c.getId());
+              this.companyRepository.deleteById(id);
+            },
+            () -> {
+              throw new CustomEntityNotFoundException(
+                  "Company with id " + id.toString() + " not found");
+            });
   }
 
   @Override
@@ -88,6 +94,14 @@ public class CompanyServiceImpl implements CompanyService {
               company.setLanguages(languages);
               return this.save(company);
             })
-        .orElseThrow(CompanyNotFoundException::new);
+        .orElseThrow(
+            () ->
+                new CustomEntityNotFoundException(
+                    "Company with id " + id.toString() + " not found"));
+  }
+
+  @Override
+  public Optional<Company> findCompanyByCreatorId(UUID id) {
+    return this.companyRepository.findCompanyByCreatorId(id);
   }
 }

@@ -25,7 +25,8 @@ public class CompanyRepresentationModelAssembler
           linkTo(methodOn(CompanyController.class).getCompanyLanguages(company.getId()))
               .withRel("languages"));
       resource.add(
-          linkTo(methodOn(CompanyLogoController.class).getCompanyLogo(company.getId())).withRel("image"));
+          linkTo(methodOn(CompanyLogoController.class).getCompanyLogo(company.getId()))
+              .withRel("image"));
     }
   }
 

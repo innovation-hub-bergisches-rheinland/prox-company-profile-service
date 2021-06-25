@@ -1,9 +1,11 @@
 package de.innovationhub.prox.companyprofileservice.domain.company.language;
 
 import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,29 +28,32 @@ public class Language extends AbstractEntity {
   @Length(min = 2, max = 2)
   private String isoIdentifier2;
 
-  @NotBlank private String englishName;
+  @NotBlank
+  @Size(max = 255)
+  private String englishName;
 
-  @NotBlank private String germanName;
+  @NotBlank
+  @Size(max = 255)
+  private String germanName;
+
+  // ISO 3166-1-alpha-2 mapping
+  @Column(name = "iso3166_mapping")
+  @Length(min = 2, max = 2)
+  private String iso3166Mapping;
 
   @NotNull private Type type;
 
-  public Language(String isoIdentifier2, String englishName, String germanName, Type type) {
-    if (isoIdentifier2 == null || isoIdentifier2.length() != 2 && !isoIdentifier2.isBlank()) {
-      throw new IllegalArgumentException("ISO 639-2 Identifier invalid");
-    }
-    if (englishName == null
-        || englishName.isBlank()
-        || germanName == null
-        || germanName.isBlank()) {
-      throw new IllegalArgumentException("Language name cannot be blank or null");
-    }
-    if (type == null) {
-      throw new IllegalArgumentException("Language type cannot be null use Type.NONE instead");
-    }
-    this.isoIdentifier2 = isoIdentifier2.toLowerCase();
-    this.englishName = englishName;
-    this.germanName = germanName;
-    this.type = type;
+  public Language(
+      String isoIdentifier2,
+      String englishName,
+      String germanName,
+      Type type,
+      String iso3166Mapping) {
+    this.setIsoIdentifier2(isoIdentifier2);
+    this.setIso3166Mapping(iso3166Mapping);
+    this.setEnglishName(englishName);
+    this.setGermanName(germanName);
+    this.setType(type);
   }
 
   public void setIsoIdentifier2(String isoIdentifier2) {
@@ -56,6 +61,13 @@ public class Language extends AbstractEntity {
       throw new IllegalArgumentException("ISO 639-2 Identifier invalid");
     }
     this.isoIdentifier2 = isoIdentifier2.toLowerCase();
+  }
+
+  public void setIso3166Mapping(String iso3166Mapping) {
+    if (iso3166Mapping != null && iso3166Mapping.length() != 2) {
+      throw new IllegalArgumentException("ISO 3166-1 Alpha 2 mapping must contain exactly 2 chars");
+    }
+    this.iso3166Mapping = iso3166Mapping;
   }
 
   public void setEnglishName(String englishName) {

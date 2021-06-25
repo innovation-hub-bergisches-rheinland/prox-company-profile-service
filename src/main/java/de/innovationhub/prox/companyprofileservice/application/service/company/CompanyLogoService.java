@@ -8,7 +8,10 @@ import java.util.UUID;
 
 public interface CompanyLogoService {
   Optional<CompanyLogo> getCompanyLogo(UUID companyId);
+
   Optional<InputStream> getCompanyLogoAsStream(CompanyLogo companyLogo);
+
   Optional<CompanyLogo> setCompanyLogo(UUID companyId, InputStream inputStream) throws IOException;
+
   Optional<CompanyLogo> deleteCompanyLogo(UUID companyId);
 }

@@ -1,16 +1,14 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
-import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
-import de.innovationhub.prox.companyprofileservice.application.exception.company.CompanyNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.CompanyRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
+import de.innovationhub.prox.companyprofileservice.application.security.KeycloakAuthenticationService;
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
-import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -21,7 +19,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,29 +27,19 @@ public class CompanyControllerImpl implements CompanyController {
   private final CompanyService companyService;
   private final CompanyRepresentationModelAssembler companyRepresentationModelAssembler;
   private final LanguageRepresentationModelAssembler languageRepresentationModelAssembler;
+  private final KeycloakAuthenticationService keycloakAuthenticationService;
   private final Logger logger = LoggerFactory.getLogger(CompanyControllerImpl.class);
 
   @Autowired
   public CompanyControllerImpl(
       CompanyService companyService,
       CompanyRepresentationModelAssembler companyRepresentationModelAssembler,
-      LanguageRepresentationModelAssembler languageRepresentationModelAssembler) {
+      LanguageRepresentationModelAssembler languageRepresentationModelAssembler,
+      KeycloakAuthenticationService keycloakAuthenticationService) {
     this.companyService = companyService;
     this.companyRepresentationModelAssembler = companyRepresentationModelAssembler;
     this.languageRepresentationModelAssembler = languageRepresentationModelAssembler;
-  }
-
-  @ExceptionHandler({CustomEntityNotFoundException.class})
-  public ResponseEntity<ApiError> entityNotFoundExceptionHandler(CustomEntityNotFoundException e) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        .body(new ApiError(HttpStatus.NOT_FOUND.value(), e.getType(), e.getMessage()));
-  }
-
-  @ExceptionHandler({IllegalArgumentException.class})
-  public ResponseEntity<ApiError> entityNotFoundExceptionHandler(IllegalArgumentException e) {
-    logger.error(e.getMessage(), e);
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "Illegal Argument", e.getMessage()));
+    this.keycloakAuthenticationService = keycloakAuthenticationService;
   }
 
   @Override
@@ -63,8 +50,27 @@ public class CompanyControllerImpl implements CompanyController {
   }
 
   @Override
+  public ResponseEntity<EntityModel<Company>> getMyCompany() {
+    Optional<UUID> subjectId = this.keycloakAuthenticationService.getSubjectId();
+    if (subjectId.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+    Optional<Company> company = companyService.findCompanyByCreatorId(subjectId.get());
+    if (company.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+    return ResponseEntity.ok(companyRepresentationModelAssembler.toModel(company.get()));
+  }
+
+  @Override
   public ResponseEntity<EntityModel<Company>> getCompany(UUID id) {
-    var company = companyService.getById(id).orElseThrow(CompanyNotFoundException::new);
+    var company =
+        companyService
+            .getById(id)
+            .orElseThrow(
+                () ->
+                    new CustomEntityNotFoundException(
+                        "Company with id " + id.toString() + " not found"));
     return ResponseEntity.ok(companyRepresentationModelAssembler.toModel(company));
   }
 
@@ -77,9 +83,9 @@ public class CompanyControllerImpl implements CompanyController {
 
   @Override
   public ResponseEntity<CollectionModel<EntityModel<Language>>> putCompanyLanguages(
-      UUID id, String[] languageIds) {
+      UUID id, UUID[] languageIds) {
 
-    var uuids = Arrays.stream(languageIds).map(UUID::fromString).collect(Collectors.toSet());
+    var uuids = Arrays.stream(languageIds).collect(Collectors.toSet());
 
     var company = companyService.setCompanyLanguages(id, uuids);
     return ResponseEntity.ok(
@@ -94,13 +100,21 @@ public class CompanyControllerImpl implements CompanyController {
   }
 
   @Override
-  public ResponseEntity<EntityModel<Company>> updateCompany(UUID id, @Valid Company professor) {
-    if (!professor.getId().equals(id)) {
+  public ResponseEntity<EntityModel<Company>> updateCompany(UUID id, @Valid Company company) {
+    if (!company.getId().equals(id)) {
       throw new RuntimeException();
     }
 
-    var savedCompany = this.companyService.update(id, professor);
+    var savedCompany = this.companyService.update(id, company);
 
     return ResponseEntity.ok(this.companyRepresentationModelAssembler.toModel(savedCompany));
+  }
+
+  @Override
+  public ResponseEntity<EntityModel<Company>> findCompanyByCreatorId(UUID creatorId) {
+    return this.companyService
+        .findCompanyByCreatorId(creatorId)
+        .map(c -> ResponseEntity.ok(companyRepresentationModelAssembler.toModel(c)))
+        .orElseThrow(() -> new CustomEntityNotFoundException("No company found"));
   }
 }
