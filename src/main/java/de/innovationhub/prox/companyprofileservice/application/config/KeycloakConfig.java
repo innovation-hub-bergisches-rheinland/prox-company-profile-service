@@ -21,7 +21,8 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
   private final UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator;
 
   @Autowired
-  public KeycloakConfig(UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator) {
+  public KeycloakConfig(
+      UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator) {
     this.userIsOwnerOfCompanyPermissionEvaluator = userIsOwnerOfCompanyPermissionEvaluator;
   }
 
@@ -46,18 +47,19 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
     web.expressionHandler(handler);
   }
 
-  //TODO: Use actual hasPermission() expression instead of bean invocation
+  // TODO: Use actual hasPermission() expression instead of bean invocation
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
-    http.csrf()
+    http.cors()
+        .and()
+        .csrf()
         .disable()
         .authorizeRequests()
         .antMatchers(HttpMethod.GET, "/**")
         .permitAll()
         .antMatchers(HttpMethod.POST, "/companies/**")
-        .access(
-            "hasRole('company-manager')")
+        .access("hasRole('company-manager')")
         .antMatchers(HttpMethod.POST, "/companies/{id}/logo/**")
         .access(
             "hasRole('company-manager') and @userIsOwnerOfCompanyPermissionEvaluator.hasPermission(authentication, #id, 'company', 'OWNER')")
