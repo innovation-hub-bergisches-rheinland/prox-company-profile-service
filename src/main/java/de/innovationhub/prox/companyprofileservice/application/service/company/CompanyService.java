@@ -18,6 +18,4 @@ public interface CompanyService extends CrudService<Company, UUID> {
   }
 
   Company setCompanyLanguages(UUID id, Iterable<UUID> languageIds);
-
-  Optional<Company> findCompanyByCreatorId(UUID id);
 }

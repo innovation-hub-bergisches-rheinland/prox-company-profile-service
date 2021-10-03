@@ -50,19 +50,6 @@ public class CompanyControllerImpl implements CompanyController {
   }
 
   @Override
-  public ResponseEntity<EntityModel<Company>> getMyCompany() {
-    Optional<UUID> subjectId = this.keycloakAuthenticationService.getSubjectId();
-    if (subjectId.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-    Optional<Company> company = companyService.findCompanyByCreatorId(subjectId.get());
-    if (company.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-    return ResponseEntity.ok(companyRepresentationModelAssembler.toModel(company.get()));
-  }
-
-  @Override
   public ResponseEntity<EntityModel<Company>> getCompany(UUID id) {
     var company =
         companyService
@@ -108,13 +95,5 @@ public class CompanyControllerImpl implements CompanyController {
     var savedCompany = this.companyService.update(id, company);
 
     return ResponseEntity.ok(this.companyRepresentationModelAssembler.toModel(savedCompany));
-  }
-
-  @Override
-  public ResponseEntity<EntityModel<Company>> findCompanyByCreatorId(UUID creatorId) {
-    return this.companyService
-        .findCompanyByCreatorId(creatorId)
-        .map(c -> ResponseEntity.ok(companyRepresentationModelAssembler.toModel(c)))
-        .orElseThrow(() -> new CustomEntityNotFoundException("No company found"));
   }
 }

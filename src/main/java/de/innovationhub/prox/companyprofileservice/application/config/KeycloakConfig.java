@@ -1,6 +1,5 @@
 package de.innovationhub.prox.companyprofileservice.application.config;
 
-import de.innovationhub.prox.companyprofileservice.application.security.UserIsOwnerOfCompanyPermissionEvaluator;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
@@ -18,14 +17,6 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @KeycloakConfiguration
 public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-  private final UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator;
-
-  @Autowired
-  public KeycloakConfig(
-      UserIsOwnerOfCompanyPermissionEvaluator userIsOwnerOfCompanyPermissionEvaluator) {
-    this.userIsOwnerOfCompanyPermissionEvaluator = userIsOwnerOfCompanyPermissionEvaluator;
-  }
-
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) {
     KeycloakAuthenticationProvider keycloakAuthenticationProvider =
@@ -38,13 +29,6 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Override
   protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
     return new NullAuthenticatedSessionStrategy();
-  }
-
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    var handler = new DefaultWebSecurityExpressionHandler();
-    handler.setPermissionEvaluator(userIsOwnerOfCompanyPermissionEvaluator);
-    web.expressionHandler(handler);
   }
 
   // TODO: Use actual hasPermission() expression instead of bean invocation
@@ -62,13 +46,13 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
         .access("hasRole('company-manager')")
         .antMatchers(HttpMethod.POST, "/companies/{id}/logo/**")
         .access(
-            "hasRole('company-manager') and @userIsOwnerOfCompanyPermissionEvaluator.hasPermission(authentication, #id, 'company', 'OWNER')")
+            "hasRole('company-manager')")
         .antMatchers(HttpMethod.PUT, "/companies/{id}/**", "/companies/{id}/languages/**")
         .access(
-            "hasRole('company-manager') and @userIsOwnerOfCompanyPermissionEvaluator.hasPermission(authentication, #id, 'company', 'OWNER')")
+            "hasRole('company-manager')")
         .antMatchers(HttpMethod.DELETE, "/companies/{id}/**", "companies/{id}/logo/**")
         .access(
-            "hasRole('company-manager') and @userIsOwnerOfCompanyPermissionEvaluator.hasPermission(authentication, #id, 'company', 'OWNER')")
+            "hasRole('company-manager')")
         .anyRequest()
         .denyAll();
   }

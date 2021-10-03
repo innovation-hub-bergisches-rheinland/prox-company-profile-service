@@ -6,9 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.company.quarter.Quarter;
 import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
+import de.innovationhub.prox.companyprofileservice.domain.core.Owner;
 import java.util.Set;
-import java.util.UUID;
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -20,19 +19,16 @@ import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 public class Company extends AbstractEntity {
 
-  @CreatedBy
-  // @JsonIgnore
-  @Column(unique = true)
-  private UUID creatorId;
+  @NotNull
+  @OneToOne(optional = false)
+  private Owner owner;
 
   @Embedded @NotNull private CompanyInformation information;
 

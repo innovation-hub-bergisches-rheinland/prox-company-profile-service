@@ -33,20 +33,6 @@ public interface CompanyController {
   ResponseEntity<CollectionModel<EntityModel<Company>>> getAllCompanies();
 
   @ApiResponse(
-      responseCode = "404",
-      description = "No company with the given ID found",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = ApiError.class)))
-  @ApiResponse(responseCode = "200", description = "OK")
-  @Operation(
-      summary = "Get owned company of authenticated user",
-      security = @SecurityRequirement(name = "Bearer"))
-  @GetMapping(value = "/me", produces = MediaTypes.HAL_JSON_VALUE)
-  ResponseEntity<EntityModel<Company>> getMyCompany();
-
-  @ApiResponse(
       responseCode = "400",
       description = "Invalid UUID",
       content =
@@ -167,22 +153,4 @@ public interface CompanyController {
   ResponseEntity<EntityModel<Company>> updateCompany(
       @PathVariable UUID id, @RequestBody Company professor);
 
-  @ApiResponse(
-      responseCode = "400",
-      description = "Invalid UUID",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = ApiError.class)))
-  @ApiResponse(
-      responseCode = "404",
-      description = "No company with the given ID found",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = ApiError.class)))
-  @ApiResponse(responseCode = "200", description = "OK")
-  @Operation(summary = "Get company")
-  @GetMapping(value = "/search/findCompanyByCreatorId", produces = MediaTypes.HAL_JSON_VALUE)
-  ResponseEntity<EntityModel<Company>> findCompanyByCreatorId(@RequestParam UUID creatorId);
 }

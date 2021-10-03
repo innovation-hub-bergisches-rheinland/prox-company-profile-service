@@ -99,9 +99,4 @@ public class CompanyServiceImpl implements CompanyService {
                 new CustomEntityNotFoundException(
                     "Company with id " + id.toString() + " not found"));
   }
-
-  @Override
-  public Optional<Company> findCompanyByCreatorId(UUID id) {
-    return this.companyRepository.findCompanyByCreatorId(id);
-  }
 }
