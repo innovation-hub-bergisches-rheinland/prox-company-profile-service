@@ -1,11 +1,6 @@
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-moduleImport:
-  delay:
-    initial:
-      seconds: 0
+    enabled: false
 spring:
   datasource:
     password: company-profile-service
@@ -13,13 +8,7 @@ spring:
     username: company-profile-service
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
     show-sql: true
-  flyway:
-    enabled: false
   h2:
     console:
       enabled: true
-keycloak:
-  auth-server-url: http://127.0.0.1:8080/auth
