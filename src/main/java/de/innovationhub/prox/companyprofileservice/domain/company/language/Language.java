@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.validator.constraints.Length;
 
 /** Languages based on ISO 639-2 */
 @Getter
@@ -26,7 +25,7 @@ import org.hibernate.validator.constraints.Length;
 public class Language extends AbstractEntity {
   @NaturalId
   @NotBlank
-  @Length(min = 2, max = 2)
+  @Size(min = 2, max = 2)
   private String isoIdentifier2;
 
   @NotBlank
@@ -39,7 +38,7 @@ public class Language extends AbstractEntity {
 
   // ISO 3166-1-alpha-2 mapping
   @Column(name = "iso3166_mapping")
-  @Length(min = 2, max = 2)
+  @Size(min = 2, max = 2)
   private String iso3166Mapping;
 
   @NotNull private Type type;
