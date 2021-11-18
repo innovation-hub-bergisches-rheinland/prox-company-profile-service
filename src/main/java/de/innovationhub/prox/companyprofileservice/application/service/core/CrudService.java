@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.service.core;
 
+
 import java.util.Optional;
 
 public interface CrudService<T, ID> {

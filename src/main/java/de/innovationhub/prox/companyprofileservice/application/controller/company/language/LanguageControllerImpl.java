@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company.language;
 
+
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.hateoas.LanguageRepresentationModelAssembler;
 import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;

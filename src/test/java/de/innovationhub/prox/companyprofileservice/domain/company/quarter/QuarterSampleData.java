@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company.quarter;
 
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

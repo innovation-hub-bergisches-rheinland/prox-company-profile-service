@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.config;
 
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;

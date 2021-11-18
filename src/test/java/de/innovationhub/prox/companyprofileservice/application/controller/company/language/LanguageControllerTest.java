@@ -34,10 +34,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest(controllers = LanguageController.class)
 @Import({
-    LanguageRepresentationModelAssembler.class,
-    LanguageRepresentationModelAssembler.class,
-    WebConfig.class,
-    SecurityConfig.class
+  LanguageRepresentationModelAssembler.class,
+  LanguageRepresentationModelAssembler.class,
+  WebConfig.class,
+  SecurityConfig.class
 })
 @RunWith(SpringRunner.class)
 class LanguageControllerTest {
@@ -57,9 +57,11 @@ class LanguageControllerTest {
     this.sampleLanguage = languageSampleData.getSAMPLE_LANGUAGE_1();
     this.sampleLanguages = languageSampleData.getSAMPLE_LANGUAGES();
 
-    //unnecessary as KeycloakConfig.class is not in ApplicationContext. Leave it in for reference
-    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
-    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
+    // unnecessary as KeycloakConfig.class is not in ApplicationContext. Leave it in for reference
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any()))
+        .thenReturn(true);
+    when(userIsOwnerOfCompanyPermissionEvaluator.hasPermission(any(), any(), any(), any()))
+        .thenReturn(true);
   }
 
   @Test

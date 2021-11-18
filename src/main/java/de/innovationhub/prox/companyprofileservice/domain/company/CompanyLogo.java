@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company;
 
+
 import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
 import java.util.UUID;
 import javax.persistence.Entity;

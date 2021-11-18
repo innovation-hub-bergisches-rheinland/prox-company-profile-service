@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company.language;
 
+
 import de.innovationhub.prox.companyprofileservice.domain.core.AbstractEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;

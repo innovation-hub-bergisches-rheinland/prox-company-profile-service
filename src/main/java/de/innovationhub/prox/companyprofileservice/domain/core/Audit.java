@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.core;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.util.UUID;

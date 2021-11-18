@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company;
 
+
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.validation.constraints.Email;

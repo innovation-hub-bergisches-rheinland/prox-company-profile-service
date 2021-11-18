@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company;
 
+
 import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;

@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company.language;
 
+
 import java.util.Collection;
 import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;

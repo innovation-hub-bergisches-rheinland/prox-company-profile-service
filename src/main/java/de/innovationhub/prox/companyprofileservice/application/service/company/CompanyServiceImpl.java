@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.service.company;
 
+
 import de.innovationhub.prox.companyprofileservice.application.exception.core.CustomEntityNotFoundException;
 import de.innovationhub.prox.companyprofileservice.application.service.company.language.LanguageService;
 import de.innovationhub.prox.companyprofileservice.domain.company.Company;

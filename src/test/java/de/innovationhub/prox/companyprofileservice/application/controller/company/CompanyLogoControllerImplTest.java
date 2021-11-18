@@ -1,9 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-
-//TODO: This test breaks the jenkins build
+// TODO: This test breaks the jenkins build
 /*@SpringBootTest
 class CompanyLogoControllerImplTest {
 

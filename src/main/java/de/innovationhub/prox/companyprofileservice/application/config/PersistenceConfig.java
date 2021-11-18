@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.config;
 
+
 import de.innovationhub.prox.companyprofileservice.application.security.KeycloakAuditorAware;
 import de.innovationhub.prox.companyprofileservice.application.security.KeycloakAuthenticationService;
 import java.util.UUID;

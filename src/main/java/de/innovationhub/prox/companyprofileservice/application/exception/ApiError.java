@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.exception;
 
+
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;

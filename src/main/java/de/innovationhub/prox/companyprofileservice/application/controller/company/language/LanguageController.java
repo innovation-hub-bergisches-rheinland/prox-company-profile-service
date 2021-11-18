@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company.language;
 
+
 import de.innovationhub.prox.companyprofileservice.application.exception.ApiError;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Language;
 import de.innovationhub.prox.companyprofileservice.domain.company.language.Type;

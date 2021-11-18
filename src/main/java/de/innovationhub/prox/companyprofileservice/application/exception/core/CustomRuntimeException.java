@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.exception.core;
 
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

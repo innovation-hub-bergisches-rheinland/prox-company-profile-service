@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company;
 
+
 import de.innovationhub.prox.companyprofileservice.domain.company.language.LanguageSampleData;
 import de.innovationhub.prox.companyprofileservice.domain.company.quarter.QuarterSampleData;
 import java.util.Arrays;

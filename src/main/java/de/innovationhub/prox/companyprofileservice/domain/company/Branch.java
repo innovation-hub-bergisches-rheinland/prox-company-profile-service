@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.domain.company;
 
+
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

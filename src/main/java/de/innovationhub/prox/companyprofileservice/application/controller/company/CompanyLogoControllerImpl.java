@@ -1,5 +1,6 @@
 package de.innovationhub.prox.companyprofileservice.application.controller.company;
 
+
 import de.innovationhub.prox.companyprofileservice.application.service.company.CompanyLogoService;
 import java.io.IOException;
 import java.io.InputStream;
