@@ -9,7 +9,7 @@
 
   <groupId>de.innovation-hub.prox</groupId>
   <artifactId>prox-company-profile-service</artifactId>
-  <version>0.3.4-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>prox-company-profile-service</name>
   <description>PROX Service for company profile</description>
