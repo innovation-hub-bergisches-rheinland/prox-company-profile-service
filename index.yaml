@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   prox-company-profile-service:
   - apiVersion: v2
+    appVersion: 1.0.2
+    created: "2022-01-14T15:04:26.244766224Z"
+    description: A Helm chart for Kubernetes
+    digest: 8b339892b9f4e4c24811480d8c88d4f3cec03f68b37185e2b03864ed87ae81f8
+    name: prox-company-profile-service
+    type: application
+    urls:
+    - https://innovation-hub-bergisches-rheinland.github.io/prox-company-profile-service/prox-company-profile-service-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2022-01-13T14:18:53.23107959Z"
     description: A Helm chart for Kubernetes
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://innovation-hub-bergisches-rheinland.github.io/prox-company-profile-service/prox-company-profile-service-1.0.0.tgz
     version: 1.0.0
-generated: "2022-01-13T14:18:53.230213983Z"
+generated: "2022-01-14T15:04:26.243797725Z"
