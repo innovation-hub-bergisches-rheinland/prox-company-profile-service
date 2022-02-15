@@ -7,12 +7,6 @@ metadata:
     {{- include "prox-company-profile-service.labels" . | nindent 4 }}
 data:
   application.yml: |-
-    eureka:
-      client:
-        serviceUrl:
-          defaultZone: http://prox-service-discovery:8761/eureka/
-      instance:
-        hostname: prox-company-profile-service
     keycloak:
       auth-server-url: https://login.aws.innovation-hub.de/auth
       bearer-only: true
