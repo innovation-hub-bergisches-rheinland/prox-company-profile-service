@@ -21,7 +21,7 @@ data:
       realm: archilab
       resource: prox-company-profile-service
     server:
-      port: 9006
+      port: 8080
       forward-headers-strategy: native
     spring:
       application:
